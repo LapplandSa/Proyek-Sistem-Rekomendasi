@@ -1,8 +1,23 @@
-# Laporan Proyek Machine Learning - Nama Anda
+# Laporan Proyek Machine Learning - Moch. Yusuf Haidar Ali Ramdhani
+# Proyek Sistem Rekomendasi
 
 ## Project Overview
 
-Pada bagian ini, Kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
+Dalam era digital saat ini, jumlah film yang tersedia secara online semakin meningkat, baik melalui platform streaming maupun katalog digital lainnya. Hal ini menyebabkan pengguna kesulitan dalam memilih film yang sesuai dengan preferensi mereka. Oleh karena itu, sistem rekomendasi film menjadi sangat penting untuk membantu pengguna menemukan film yang relevan dan menarik bagi mereka.
+
+Sistem rekomendasi telah menjadi komponen kunci dalam banyak aplikasi modern, terutama di industri hiburan seperti Netflix, Amazon Prime Video, dan Disney+. Menurut Ricci et al. [1], sistem rekomendasi bertujuan untuk memberikan saran item yang paling relevan kepada pengguna berdasarkan preferensi atau perilaku sebelumnya. Pendekatan umum dalam sistem rekomendasi adalah content-based filtering dan collaborative filtering.
+
+Dalam proyek ini, akan dikembangkan sistem rekomendasi film menggunakan kedua pendekatan tersebut:
+
+Content-Based Filtering akan memanfaatkan metadata film, seperti genre, untuk merekomendasikan film yang mirip dengan yang telah disukai pengguna.
+
+Collaborative Filtering, terutama dengan pendekatan model embedding menggunakan TensorFlow, akan memanfaatkan pola rating dari pengguna lain untuk memberikan rekomendasi yang lebih personal.
+
+Masalah ini penting untuk diselesaikan karena relevansi rekomendasi sangat berpengaruh terhadap kepuasan pengguna. Tanpa sistem yang baik, pengguna bisa kehilangan minat atau menghabiskan waktu lebih lama untuk mencari tontonan, yang pada akhirnya berdampak pada engagement dan retensi pengguna dalam aplikasi.
+
+Data yang digunakan dalam proyek ini berasal dari MovieLens, salah satu dataset benchmark paling umum dalam pengembangan sistem rekomendasi. MovieLens dikembangkan oleh GroupLens Research dan telah digunakan dalam berbagai penelitian akademik [2].
+
+Dengan menggabungkan dua pendekatan utama dalam sistem rekomendasi, proyek ini bertujuan untuk menghasilkan sistem yang lebih akurat dan mampu memberikan saran film yang lebih relevan dan dipersonalisasi.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
@@ -18,19 +33,25 @@ Bagian laporan ini mencakup:
 
 ### Problem Statements
 
-Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+Pengguna kesulitan menemukan film yang sesuai dengan preferensi mereka.
+Dengan jumlah film yang sangat banyak dalam katalog, pengguna seringkali bingung menentukan pilihan tontonan yang sesuai selera.
+
+Rekomendasi film yang tidak personal mengurangi minat pengguna.
+Sistem rekomendasi konvensional yang tidak memperhatikan preferensi individual cenderung menghasilkan saran yang kurang relevan.
+
+Kurangnya integrasi antara informasi konten film dan pola perilaku pengguna.
+Banyak sistem hanya menggunakan satu pendekatan saja (misalnya genre), padahal gabungan informasi konten dan perilaku bisa memberikan hasil yang lebih akurat.
 
 ### Goals
 
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+Membuat sistem yang dapat memberikan rekomendasi film berdasarkan preferensi pengguna.
+Sistem ini diharapkan mampu menyarankan film dengan genre atau karakteristik yang mirip dengan film yang pernah disukai pengguna.
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+Meningkatkan personalisasi rekomendasi menggunakan data perilaku pengguna.
+Dengan memanfaatkan data rating pengguna lain, sistem dapat menyarankan film yang cenderung disukai oleh pengguna dengan perilaku serupa.
+
+Menguji efektivitas gabungan pendekatan content-based dan collaborative filtering.
+Sistem akan dibangun dan dievaluasi dengan dua metode untuk melihat mana yang paling efektif, atau apakah kombinasi keduanya menghasilkan hasil terbaik.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
