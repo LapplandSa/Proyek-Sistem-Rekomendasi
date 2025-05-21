@@ -60,14 +60,40 @@ Pendekatan ini memanfaatkan metadata film, seperti genre, untuk menghitung tingk
 Metode ini membangun representasi vektor (embedding) untuk setiap pengguna dan film berdasarkan pola interaksi dan rating yang diberikan. Dengan menggunakan model neural network, seperti RecommenderNet yang dikembangkan menggunakan TensorFlow, sistem mempelajari hubungan kompleks antara pengguna dan film melalui embedding layer dan operasi dot product untuk memprediksi rating atau preferensi pengguna terhadap film yang belum pernah ditonton. Pendekatan ini memungkinkan rekomendasi yang lebih personal dan akurat dengan memanfaatkan data interaksi pengguna secara kolektif.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
 
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+Dataset yang digunakan dalam proyek ini adalah Movie Recommendation System Dataset dari Kaggle, yang berbasis pada MovieLens dataset—sebuah dataset standar yang banyak digunakan untuk membangun dan mengevaluasi sistem rekomendasi film. Dataset ini tersedia secara publik dan dapat diakses di tautan berikut: https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system?select=ratings.csv
 
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+Ringkasan Data:
+
+- Jumlah pengguna: Lebih dari 600 pengguna unik.
+
+- Jumlah film: Lebih dari 9.000 film.
+
+- Jumlah rating: Lebih dari 100.000 data rating.
+
+Kondisi data: Data telah melalui proses pra-pemrosesan (preprocessing) dasar namun tetap memerlukan tahapan lanjutan seperti encoding, normalisasi, serta pembagian data untuk pelatihan dan validasi model.
+
+Variabel atau fitur penting dalam dataset movies adalah:
+
+- movieId: Identifikasi unik setiap film.
+
+- title: Judul film.
+
+- genres: Kategori atau genre film, bisa lebih dari satu per film, dipisahkan dengan karakter tertentu.
+
+- year (ditambahkan): tahun rilis film.
+
+Variabel atau fitur penting dalam dataset ratings adalah:
+
+- userID: Identifikasi unik setiap pengguna.
+
+- movieId: Identifikasi unik setiap film.
+
+- rating: Nilai rating yang diberikan pengguna terhadap film (skala 0.5–5).
+
+- timestamp: Waktu ketika rating diberikan.
+
+
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
