@@ -92,13 +92,14 @@ Variabel atau fitur penting dalam dataset ratings adalah:
 - timestamp: Waktu ketika rating diberikan.
 
 
-
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
 
 ## Data Preparation
 
-2. Pembersihan dan Seleksi Data
+### Menangani Missing Value
+
+### Pembersihan dan Seleksi Data
 Beberapa tahapan dilakukan dalam tahap ini:
 
 Menghapus data duplikat jika ada.
