@@ -65,11 +65,9 @@ Dataset yang digunakan dalam proyek ini adalah Movie Recommendation System Datas
 
 Ringkasan Data:
 
-- Jumlah pengguna: Lebih dari 600 pengguna unik.
+- Jumlah film: Terdapat 9.742 data film.
 
-- Jumlah film: Lebih dari 9.000 film.
-
-- Jumlah rating: Lebih dari 100.000 data rating.
+- Jumlah rating: Terdapat 100.836 data rating.
 
 Kondisi data: Data telah melalui proses pra-pemrosesan (preprocessing) dasar namun tetap memerlukan tahapan lanjutan seperti encoding, normalisasi, serta pembagian data untuk pelatihan dan validasi model.
 
@@ -99,14 +97,99 @@ Variabel atau fitur penting dalam dataset ratings adalah:
 - Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+
+2. Pembersihan dan Seleksi Data
+Beberapa tahapan dilakukan dalam tahap ini:
+
+Menghapus data duplikat jika ada.
+
+Memastikan tidak ada nilai kosong (missing values) pada kolom penting (userId, movieId, rating, title, genres).
+
+Menyeleksi hanya kolom yang dibutuhkan untuk model (misal, tidak memakai timestamp).
+
+Alasan:
+Data yang bersih memastikan proses pelatihan model tidak terganggu oleh noise seperti duplikasi atau nilai yang hilang, serta menjaga efisiensi dengan hanya menggunakan fitur yang relevan.
+
+3. Encoding Genre (untuk Content-Based Filtering)
+Genre film disimpan dalam format string yang dipisahkan oleh "|". Genre ini diubah menjadi representasi fitur numerik dengan menggunakan teknik TF-IDF Vectorization.
+
+Alasan:
+Genre perlu diubah menjadi format numerik agar bisa dihitung kemiripannya menggunakan teknik seperti cosine similarity, yang digunakan dalam content-based filtering.
+
+4. Normalisasi Rating
+Rating pengguna dinormalisasi ke dalam skala yang lebih netral (jika diperlukan), atau digunakan sebagaimana adanya untuk prediksi.
+
+Alasan:
+Normalisasi membantu model mempelajari distribusi data dengan lebih stabil, terutama saat menggunakan teknik berbasis pembelajaran mesin atau neural network.
+
+5. Pembentukan Matrix User-Item
+Data diubah menjadi bentuk matrix userId x movieId yang mencerminkan nilai rating. Ini digunakan dalam pendekatan collaborative filtering berbasis model, khususnya embedding layer.
+
+Alasan:
+Pendekatan model seperti neural collaborative filtering membutuhkan input berupa pasangan user dan item untuk membentuk representasi laten (embedding).
+
+6. Pembagian Data (Train-Test Split)
+Data rating dibagi ke dalam training set dan testing set, biasanya dengan rasio 80:20.
+
+Alasan:
+Pemodelan perlu diuji pada data yang tidak pernah dilihat sebelumnya untuk menilai performa sistem rekomendasi secara adil dan menghindari overfitting.
+
+
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan proses data preparation yang dilakukan
 - Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+Pada tahap ini, dilakukan pembangunan dua model sistem rekomendasi menggunakan dua pendekatan berbeda: Content-Based Filtering dan Collaborative Filtering berbasis model (Neural Network). Masing-masing pendekatan ditujukan untuk mengatasi permasalahan yang berbeda serta saling melengkapi satu sama lain.
+
+### Content-Based Filtering
+Pada pendekatan ini, sistem merekomendasikan film berdasarkan kemiripan konten dengan film yang sebelumnya disukai pengguna. Konten yang digunakan adalah genre film.
+
+Langkah-langkah:
+Genre diolah menggunakan TF-IDF Vectorizer untuk membentuk representasi fitur dari setiap film.
+
+Kemudian dihitung cosine similarity antar film.
+
+Untuk pengguna tertentu, sistem mencari film yang paling mirip dengan yang sudah mereka beri rating tinggi.
+
+Output:
+Top-N rekomendasi diambil dari film yang paling mirip (berdasarkan nilai similarity) dengan film favorit pengguna.
+
+Kelebihan:
+Cocok untuk mengatasi cold start problem ketika pengguna belum memberikan banyak rating.
+
+Bisa memberikan alasan yang jelas atas rekomendasi (misalnya, film direkomendasikan karena memiliki genre yang sama).
+
+Kekurangan:
+Terbatas pada konten metadata (genre).
+
+Tidak bisa merekomendasikan film yang belum pernah diberi rating oleh siapapun sebelumnya (tidak memperhitungkan selera kolektif pengguna lain).
+
+### Collaborative Filtering Berbasis Model (Neural Network)
+Model ini mempelajari pola interaksi antara pengguna dan film menggunakan representasi embedding dan memprediksi rating yang mungkin diberikan pengguna ke film yang belum ditonton.
+
+Langkah-langkah:
+Dibangun model RecommenderNet dengan TensorFlow, terdiri dari dua embedding layer (untuk user dan item), dilanjutkan dengan dot product.
+
+Input berupa pasangan userId dan movieId.
+
+Target adalah rating aktual pengguna terhadap film.
+
+Setelah pelatihan, sistem memprediksi rating dari semua film yang belum ditonton oleh pengguna, kemudian mengurutkan berdasarkan nilai prediksi tertinggi.
+
+Output:
+Top-N rekomendasi berupa daftar film dengan prediksi rating tertinggi yang belum pernah ditonton oleh pengguna tersebut.
+
+Kelebihan:
+Mampu menangkap pola kompleks antara pengguna dan item.
+
+Rekomendasi bersifat personalized berdasarkan preferensi pengguna.
+
+Kekurangan:
+Membutuhkan cukup banyak data rating agar dapat belajar representasi dengan baik.
+
+Tidak dapat bekerja optimal pada pengguna baru (cold start problem).
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
@@ -121,7 +204,3 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 - Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
 
 **---Ini adalah bagian akhir laporan---**
-
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
