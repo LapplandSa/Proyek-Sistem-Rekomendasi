@@ -3,61 +3,61 @@
 
 ## Project Overview
 
-Dalam era digital saat ini, jumlah film yang tersedia secara online semakin meningkat, baik melalui platform streaming maupun katalog digital lainnya. Hal ini menyebabkan pengguna kesulitan dalam memilih film yang sesuai dengan preferensi mereka. Oleh karena itu, sistem rekomendasi film menjadi sangat penting untuk membantu pengguna menemukan film yang relevan dan menarik bagi mereka.
+Seiring perkembangan era digital, jumlah film yang tersedia secara daring melalui platform streaming seperti Netflix, Disney+, dan Amazon Prime Video meningkat secara signifikan. Hal ini memberikan kemudahan akses bagi pengguna, namun di sisi lain juga menimbulkan tantangan tersendiri—yakni kesulitan dalam memilih film yang sesuai dengan preferensi pribadi. Ketika dihadapkan pada ribuan pilihan, pengguna cenderung kebingungan dan membutuhkan bantuan sistem yang dapat menyaring pilihan tersebut secara efisien.
 
-Sistem rekomendasi telah menjadi komponen kunci dalam banyak aplikasi modern, terutama di industri hiburan seperti Netflix, Amazon Prime Video, dan Disney+. Menurut Ricci et al. [1], sistem rekomendasi bertujuan untuk memberikan saran item yang paling relevan kepada pengguna berdasarkan preferensi atau perilaku sebelumnya. Pendekatan umum dalam sistem rekomendasi adalah content-based filtering dan collaborative filtering.
+Sistem rekomendasi hadir sebagai solusi utama untuk mengatasi permasalahan ini. Menurut Ricci et al. (2010), sistem rekomendasi dirancang untuk menyarankan item yang paling relevan kepada pengguna berdasarkan riwayat interaksi atau preferensi mereka. Di dunia nyata, sistem ini menjadi komponen penting dalam meningkatkan pengalaman pengguna dan mempertahankan loyalitas, khususnya di industri hiburan digital. Tanpa sistem rekomendasi yang baik, pengguna berisiko kehilangan minat atau menghabiskan terlalu banyak waktu untuk mencari tontonan, yang pada akhirnya berdampak negatif pada tingkat keterlibatan (engagement) dan retensi pengguna.
 
-Dalam proyek ini, akan dikembangkan sistem rekomendasi film menggunakan kedua pendekatan tersebut:
+Platform telah memungkinkan pengguna untuk memberikan rating atau ulasan terhadap film yang mereka tonton. Akan tetapi menurut Agustian et al. (2020), banyaknya jumlah user yang memberi review berbeda-beda pada suatu film membuat pembaca kebingungan dalam menyimpulkan review tersebut. Dengan demikian, pengembangan sistem rekomendasi yang cerdas dan personal menjadi sangat penting.
 
-Content-Based Filtering akan memanfaatkan metadata film, seperti genre, untuk merekomendasikan film yang mirip dengan yang telah disukai pengguna.
+Proyek ini bertujuan untuk membangun sistem rekomendasi film dengan menggabungkan dua pendekatan utama, yaitu content-based filtering dan collaborative filtering berbasis model. Pendekatan content-based filtering akan memanfaatkan metadata film, seperti genre dan tahun, untuk merekomendasikan film yang mirip dengan film yang telah disukai pengguna. Di sisi lain, pendekatan collaborative filtering dengan teknik embedding akan menganalisis pola rating pengguna terhadap berbagai film untuk menangkap hubungan tersembunyi antar pengguna dan item. Metode ini dikembangkan menggunakan TensorFlow, dengan pemanfaatan embedding layer untuk menyandikan representasi pengguna dan film ke dalam ruang vektor laten.
 
-Collaborative Filtering, terutama dengan pendekatan model embedding menggunakan TensorFlow, akan memanfaatkan pola rating dari pengguna lain untuk memberikan rekomendasi yang lebih personal.
+Dengan menggabungkan kedua pendekatan tersebut, sistem rekomendasi yang dibangun dalam proyek ini diharapkan mampu memberikan hasil yang lebih akurat, relevan, dan sesuai dengan kebutuhan pengguna. Pendekatan hibrida ini memungkinkan sistem tidak hanya memahami kesukaan pengguna berdasarkan isi film, tetapi juga berdasarkan preferensi pengguna lain yang memiliki pola perilaku serupa.
 
-Masalah ini penting untuk diselesaikan karena relevansi rekomendasi sangat berpengaruh terhadap kepuasan pengguna. Tanpa sistem yang baik, pengguna bisa kehilangan minat atau menghabiskan waktu lebih lama untuk mencari tontonan, yang pada akhirnya berdampak pada engagement dan retensi pengguna dalam aplikasi.
+**Referensi**
 
-Data yang digunakan dalam proyek ini berasal dari MovieLens, salah satu dataset benchmark paling umum dalam pengembangan sistem rekomendasi. MovieLens dikembangkan oleh GroupLens Research dan telah digunakan dalam berbagai penelitian akademik [2].
+Agustian, E. R., Munir, & Nugroho, E. P. (2020). Sistem rekomendasi film menggunakan metode collaborative filtering dan K-nearest neighbors. JATIKOM: Jurnal Aplikasi dan Teori Ilmu Komputer, 3(1), 18–21.
 
-Dengan menggabungkan dua pendekatan utama dalam sistem rekomendasi, proyek ini bertujuan untuk menghasilkan sistem yang lebih akurat dan mampu memberikan saran film yang lebih relevan dan dipersonalisasi.
-
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-- Format Referensi dapat mengacu pada penulisan sitasi [IEEE](https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf), [APA](https://www.mendeley.com/guides/apa-citation-guide/) atau secara umum seperti [di sini](https://penerbitdeepublish.com/menulis-buku-membuat-sitasi-dengan-mudah/)
-- Sumber yang bisa digunakan [Scholar](https://scholar.google.com/)
+Ricci, F., Rokach, L., & Shapira, B. (2010). Recommender Systems Handbook (pp. 1–35). https://doi.org/10.1007/978-0-387-85820-3_1
 
 ## Business Understanding
 
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
-
 ### Problem Statements
 
-Pengguna kesulitan menemukan film yang sesuai dengan preferensi mereka.
-Dengan jumlah film yang sangat banyak dalam katalog, pengguna seringkali bingung menentukan pilihan tontonan yang sesuai selera.
+1. Tingginya jumlah pilihan film menyebabkan pengguna mengalami kesulitan dalam menemukan tontonan yang sesuai preferensi pribadi.
 
-Rekomendasi film yang tidak personal mengurangi minat pengguna.
-Sistem rekomendasi konvensional yang tidak memperhatikan preferensi individual cenderung menghasilkan saran yang kurang relevan.
+   Dengan ribuan judul film tersedia di platform digital, pengguna seringkali mengalami information overload sehingga memerlukan bantuan sistem yang mampu menyaring dan merekomendasikan film secara efisien.
 
-Kurangnya integrasi antara informasi konten film dan pola perilaku pengguna.
-Banyak sistem hanya menggunakan satu pendekatan saja (misalnya genre), padahal gabungan informasi konten dan perilaku bisa memberikan hasil yang lebih akurat.
+2. Sistem rekomendasi yang bersifat generik tidak mampu memberikan saran yang relevan secara personal.
+
+   Rekomendasi yang tidak mempertimbangkan pola perilaku unik dan preferensi spesifik pengguna berpotensi menghasilkan saran film yang tidak menarik, sehingga menurunkan kepuasan dan engagement pengguna.
+
+3. Kurangnya integrasi antara data konten film dan perilaku pengguna dalam sistem rekomendasi menurunkan akurasi hasil rekomendasi.
+  
+   Banyak sistem hanya mengandalkan pendekatan tunggal, seperti content-based filtering atau collaborative filtering, padahal kombinasi keduanya secara hibrida berpotensi menghasilkan rekomendasi yang lebih tepat dan kontekstual.
 
 ### Goals
 
-Membuat sistem yang dapat memberikan rekomendasi film berdasarkan preferensi pengguna.
-Sistem ini diharapkan mampu menyarankan film dengan genre atau karakteristik yang mirip dengan film yang pernah disukai pengguna.
+1. Mengembangkan sistem rekomendasi film yang mampu mempersonalisasi saran tontonan berdasarkan preferensi pengguna.
+  
+   Sistem ini dirancang untuk membantu pengguna menyaring ribuan film secara efisien dan menyarankan film yang paling relevan dengan selera mereka, sehingga mengurangi kebingungan dalam memilih.
 
-Meningkatkan personalisasi rekomendasi menggunakan data perilaku pengguna.
-Dengan memanfaatkan data rating pengguna lain, sistem dapat menyarankan film yang cenderung disukai oleh pengguna dengan perilaku serupa.
+2. Meningkatkan relevansi rekomendasi melalui pemanfaatan data historis perilaku pengguna.
 
-Menguji efektivitas gabungan pendekatan content-based dan collaborative filtering.
-Sistem akan dibangun dan dievaluasi dengan dua metode untuk melihat mana yang paling efektif, atau apakah kombinasi keduanya menghasilkan hasil terbaik.
+   Sistem akan belajar dari pola penilaian dan interaksi pengguna untuk menghasilkan saran film yang sesuai dengan kebiasaan menonton masing-masing individu.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
+3. Membangun model rekomendasi hibrida dengan menggabungkan pendekatan content-based dan collaborative filtering.
 
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+   Dengan memanfaatkan informasi konten film (seperti genre) serta data interaksi pengguna (seperti rating), sistem ini diharapkan dapat memberikan prediksi yang lebih akurat dan kontekstual dibandingkan dengan pendekatan tunggal.
+
+### Solution statements
+
+1. Content-Based Filtering
+
+Pendekatan ini memanfaatkan metadata film, seperti genre, untuk menghitung tingkat kemiripan antar film menggunakan teknik ekstraksi fitur seperti TF-IDF (Term Frequency-Inverse Document Frequency) dan pengukuran kesamaan menggunakan cosine similarity. Sistem kemudian merekomendasikan film yang memiliki kemiripan konten dengan film-film yang sebelumnya disukai oleh pengguna. Pendekatan ini sangat efektif untuk menangani masalah cold-start pada pengguna baru atau ketika data rating masih terbatas.
+
+2. Collaborative Filtering
+
+Metode ini membangun representasi vektor (embedding) untuk setiap pengguna dan film berdasarkan pola interaksi dan rating yang diberikan. Dengan menggunakan model neural network, seperti RecommenderNet yang dikembangkan menggunakan TensorFlow, sistem mempelajari hubungan kompleks antara pengguna dan film melalui embedding layer dan operasi dot product untuk memprediksi rating atau preferensi pengguna terhadap film yang belum pernah ditonton. Pendekatan ini memungkinkan rekomendasi yang lebih personal dan akurat dengan memanfaatkan data interaksi pengguna secara kolektif.
 
 ## Data Understanding
 Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
