@@ -23,39 +23,39 @@ Ricci, F., Rokach, L., & Shapira, B. (2010). Recommender Systems Handbook (pp. 1
 
 ### Problem Statements
 
-1. Tingginya jumlah pilihan film menyebabkan pengguna mengalami kesulitan dalam menemukan tontonan yang sesuai preferensi pribadi.
+**1. Tingginya jumlah pilihan film menyebabkan pengguna mengalami kesulitan dalam menemukan tontonan yang sesuai preferensi pribadi.**
 
    Dengan ribuan judul film tersedia di platform digital, pengguna seringkali mengalami information overload sehingga memerlukan bantuan sistem yang mampu menyaring dan merekomendasikan film secara efisien.
 
-2. Sistem rekomendasi yang bersifat generik tidak mampu memberikan saran yang relevan secara personal.
+**2. Sistem rekomendasi yang bersifat generik tidak mampu memberikan saran yang relevan secara personal.**
 
    Rekomendasi yang tidak mempertimbangkan pola perilaku unik dan preferensi spesifik pengguna berpotensi menghasilkan saran film yang tidak menarik, sehingga menurunkan kepuasan dan engagement pengguna.
 
-3. Kurangnya integrasi antara data konten film dan perilaku pengguna dalam sistem rekomendasi menurunkan akurasi hasil rekomendasi.
+**3. Kurangnya integrasi antara data konten film dan perilaku pengguna dalam sistem rekomendasi menurunkan akurasi hasil rekomendasi.**
   
    Banyak sistem hanya mengandalkan pendekatan tunggal, seperti content-based filtering atau collaborative filtering, padahal kombinasi keduanya secara hibrida berpotensi menghasilkan rekomendasi yang lebih tepat dan kontekstual.
 
 ### Goals
 
-1. Mengembangkan sistem rekomendasi film yang mampu mempersonalisasi saran tontonan berdasarkan preferensi pengguna.
+**1. Mengembangkan sistem rekomendasi film yang mampu mempersonalisasi saran tontonan berdasarkan preferensi pengguna.**
   
    Sistem ini dirancang untuk membantu pengguna menyaring ribuan film secara efisien dan menyarankan film yang paling relevan dengan selera mereka, sehingga mengurangi kebingungan dalam memilih.
 
-2. Meningkatkan relevansi rekomendasi melalui pemanfaatan data historis perilaku pengguna.
+**2. Meningkatkan relevansi rekomendasi melalui pemanfaatan data historis perilaku pengguna.**
 
    Sistem akan belajar dari pola penilaian dan interaksi pengguna untuk menghasilkan saran film yang sesuai dengan kebiasaan menonton masing-masing individu.
 
-3. Membangun model rekomendasi hibrida dengan menggabungkan pendekatan content-based dan collaborative filtering.
+**3. Membangun model rekomendasi hibrida dengan menggabungkan pendekatan content-based dan collaborative filtering.**
 
    Dengan memanfaatkan informasi konten film (seperti genre) serta data interaksi pengguna (seperti rating), sistem ini diharapkan dapat memberikan prediksi yang lebih akurat dan kontekstual dibandingkan dengan pendekatan tunggal.
 
 ### Solution statements
 
-1. Content-Based Filtering
+**1. Content-Based Filtering**
 
 Pendekatan ini memanfaatkan metadata film, seperti genre, untuk menghitung tingkat kemiripan antar film menggunakan teknik ekstraksi fitur seperti TF-IDF (Term Frequency-Inverse Document Frequency) dan pengukuran kesamaan menggunakan cosine similarity. Sistem kemudian merekomendasikan film yang memiliki kemiripan konten dengan film-film yang sebelumnya disukai oleh pengguna. Pendekatan ini sangat efektif untuk menangani masalah cold-start pada pengguna baru atau ketika data rating masih terbatas.
 
-2. Collaborative Filtering
+**2. Collaborative Filtering**
 
 Metode ini membangun representasi vektor (embedding) untuk setiap pengguna dan film berdasarkan pola interaksi dan rating yang diberikan. Dengan menggunakan model neural network, seperti RecommenderNet yang dikembangkan menggunakan TensorFlow, sistem mempelajari hubungan kompleks antara pengguna dan film melalui embedding layer dan operasi dot product untuk memprediksi rating atau preferensi pengguna terhadap film yang belum pernah ditonton. Pendekatan ini memungkinkan rekomendasi yang lebih personal dan akurat dengan memanfaatkan data interaksi pengguna secara kolektif.
 
@@ -63,7 +63,7 @@ Metode ini membangun representasi vektor (embedding) untuk setiap pengguna dan f
 
 Dataset yang digunakan dalam proyek ini adalah Movie Recommendation System Dataset dari Kaggle, yang berbasis pada MovieLens dataset—sebuah dataset standar yang banyak digunakan untuk membangun dan mengevaluasi sistem rekomendasi film. Dataset ini tersedia secara publik dan dapat diakses di tautan berikut: https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system?select=ratings.csv
 
-Ringkasan Data:
+### Ringkasan Data:
 
 - Jumlah film: Terdapat 9.742 data film.
 
@@ -71,7 +71,7 @@ Ringkasan Data:
 
 Kondisi data: Data telah melalui proses pra-pemrosesan (preprocessing) dasar namun tetap memerlukan tahapan lanjutan seperti encoding, normalisasi, serta pembagian data untuk pelatihan dan validasi model.
 
-Variabel atau fitur penting dalam dataset movies adalah:
+### Variabel atau fitur penting dalam dataset movies adalah:
 
 - movieId: Identifikasi unik setiap film.
 
@@ -81,7 +81,7 @@ Variabel atau fitur penting dalam dataset movies adalah:
 
 - year (ditambahkan): tahun rilis film.
 
-Variabel atau fitur penting dalam dataset ratings adalah:
+### Variabel atau fitur penting dalam dataset ratings adalah:
 
 - userID: Identifikasi unik setiap pengguna.
 
@@ -91,55 +91,72 @@ Variabel atau fitur penting dalam dataset ratings adalah:
 
 - timestamp: Waktu ketika rating diberikan.
 
+### Insight
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+**Dataset Movies**
+
+![info dataset](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/movies.png)
+
+Berdasarkan informasi struktur data, dataset movies.csv terdiri dari 9.742 entri dengan tiga kolom utama, yaitu movieId, title, dan genres. Seluruh data dalam ketiga kolom ini terisi penuh (tidak ada nilai yang hilang), yang menunjukkan kualitas data yang baik dari segi kelengkapan. Kolom movieId bertipe numerik dan digunakan sebagai pengenal unik untuk setiap film, sedangkan title dan genres bertipe objek (string). 
+
+**Dataset Ratings**
+
+![info dataset](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/ratings.png)
+
+Berdasarkan informasi struktur data, dataset ratings.csv terdiri dari 100.836 entri dengan empat kolom utama: userId, movieId, rating, dan timestamp. Semua kolom memiliki jumlah nilai yang lengkap tanpa missing value, yang menunjukkan bahwa data ini memiliki kualitas yang baik dan tidak memerlukan proses imputasi.
+
+**Describe Ratings**
+
+![Describe Ratings](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/describe.png)
+
+Berdasarkan hasil statistik deskriptif dari dataset ratings.csv, terdapat total 100.836 entri rating. Rata-rata rating yang diberikan pengguna adalah sekitar 3.50, dengan nilai minimum 0.5 dan maksimum 5.0, serta standar deviasi sebesar 1.04, yang menunjukkan bahwa pengguna cenderung memberikan rating yang cukup tinggi namun dengan variasi yang moderat.
+
+Jumlah pengguna (userId) berkisar dari 1 hingga 610, yang mengindikasikan adanya 610 pengguna unik dalam dataset. Sementara itu, movieId memiliki rentang dari 1 hingga 193.609, meskipun tidak semua ID di antaranya merupakan film yang benar-benar ada—sebagian mungkin tidak tercantum dalam dataset movies.csv.
+
+Kolom timestamp menunjukkan waktu rating dalam bentuk Unix time, dengan nilai yang berkisar dari sekitar tahun 1996 hingga 2018, memberikan peluang untuk melakukan analisis tren waktu.
+
+**Visualisasi Kolom Genre**
+
+![Visualisasi Kolom Genre](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/genre.png)
+
+Berdasarkan distribusi jumlah film per genre, dapat disimpulkan bahwa genre Drama merupakan yang paling dominan dalam dataset dengan total 4.359 film, diikuti oleh Comedy sebanyak 3.756 film. Genre-genre populer lain seperti Thriller, Action, dan Romance juga memiliki representasi yang signifikan.
+
+Sementara itu, genre yang lebih spesifik atau niche seperti Film-Noir, Western, dan IMAX memiliki jumlah film yang relatif sedikit, masing-masing hanya di bawah 200 judul. Terdapat pula 25 film yang tidak memiliki informasi genre ((no genres listed)), yang kemungkinan perlu dipertimbangkan untuk dihapus atau ditangani secara khusus dalam proses analisis dan pemodelan.
+
+**Visualisasi Rating**
+
+![Visualisasi Rating](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/rating.png)
+
 
 ## Data Preparation
 
 ### Menangani Missing Value
 
-### Pembersihan dan Seleksi Data
-Beberapa tahapan dilakukan dalam tahap ini:
+Karena tidak ditemukan data yang hilang, tidak diperlukan tindakan pembersihan atau imputasi pada tahap ini. Dengan demikian, tidak diperlukan tindakan pembersihan atau imputasi pada tahap ini. Seluruh data dapat langsung digunakan untuk proses eksplorasi, pemodelan, dan pembuatan sistem rekomendasi. Menangani nilai yang hilang merupakan langkah penting dalam tahap data preparation, karena data yang tidak lengkap dapat menyebabkan kesalahan dalam analisis dan membuat model pembelajaran mesin menghasilkan prediksi yang tidak akurat.
 
-Menghapus data duplikat jika ada.
+### Menangani Data Duplikat
 
-Memastikan tidak ada nilai kosong (missing values) pada kolom penting (userId, movieId, rating, title, genres).
+Dalam proses pembersihan data, ditemukan bahwa meskipun tidak terdapat data duplikat berdasarkan movieId, terdapat beberapa entri pada kolom title yang memiliki judul identik atau sangat mirip. Hal ini berpotensi menyebabkan sistem rekomendasi memberikan saran yang redundan dengan film yang terlihat sama. Untuk mengatasi hal tersebut, dilakukan proses data cleaning tambahan dengan mengelompokkan dan menghapus entri yang memiliki judul identik atau serupa.
 
-Menyeleksi hanya kolom yang dibutuhkan untuk model (misal, tidak memakai timestamp).
+### Menambahkan Kolom Year
 
-Alasan:
-Data yang bersih memastikan proses pelatihan model tidak terganggu oleh noise seperti duplikasi atau nilai yang hilang, serta menjaga efisiensi dengan hanya menggunakan fitur yang relevan.
+Pada tahap ini, dilakukan ekstraksi tahun rilis film dari kolom title pada dataset movies. Informasi tahun rilis umumnya tercantum di dalam tanda kurung pada akhir judul film, misalnya "Toy Story (1995)". Dengan menggunakan teknik pemrosesan teks (regular expression), angka tahun empat digit berhasil diambil dan disimpan dalam kolom baru bernama year. Penambahan kolom ini bermanfaat dalam proses analisis lebih lanjut, seperti tren perilisan film, preferensi pengguna berdasarkan tahun, atau penyaringan rekomendasi berdasarkan dekade tertentu.
 
-3. Encoding Genre (untuk Content-Based Filtering)
-Genre film disimpan dalam format string yang dipisahkan oleh "|". Genre ini diubah menjadi representasi fitur numerik dengan menggunakan teknik TF-IDF Vectorization.
+Setelah menambahkan kolom year dari informasi dalam title, ditemukan beberapa baris yang tidak memiliki nilai tahun rilis yang valid—umumnya karena format judul yang tidak konsisten atau tidak mencantumkan tahun. Untuk menjaga kualitas data dan menghindari potensi error dalam analisis maupun saat membangun sistem rekomendasi, baris-baris tersebut dihapus dari dataset.
 
-Alasan:
-Genre perlu diubah menjadi format numerik agar bisa dihitung kemiripannya menggunakan teknik seperti cosine similarity, yang digunakan dalam content-based filtering.
+### Mengecek Kolom Genre
 
-4. Normalisasi Rating
-Rating pengguna dinormalisasi ke dalam skala yang lebih netral (jika diperlukan), atau digunakan sebagaimana adanya untuk prediksi.
+Kolom genres pada dataset berisi informasi mengenai kategori atau jenis film, seperti Action, Comedy, Drama, dan sebagainya. Setiap film dapat memiliki satu atau lebih genre yang dipisahkan dengan tanda pipe (|). Selain itu, terdapat juga entri dengan genre 'no genres listed', yang menandakan bahwa informasi genre tidak tersedia untuk film tersebut.
 
-Alasan:
-Normalisasi membantu model mempelajari distribusi data dengan lebih stabil, terutama saat menggunakan teknik berbasis pembelajaran mesin atau neural network.
+Untuk menjaga konsistensi dan kualitas analisis, terutama dalam proses pemodelan berbasis konten (content-based filtering) yang sangat bergantung pada informasi genre, maka baris-baris dengan genre tidak tersedia dihapus. Langkah ini dilakukan agar setiap film yang direkomendasikan memiliki metadata yang lengkap dan relevan.
 
-5. Pembentukan Matrix User-Item
-Data diubah menjadi bentuk matrix userId x movieId yang mencerminkan nilai rating. Ini digunakan dalam pendekatan collaborative filtering berbasis model, khususnya embedding layer.
+### Mengecek Dataset Ratings
 
-Alasan:
-Pendekatan model seperti neural collaborative filtering membutuhkan input berupa pasangan user dan item untuk membentuk representasi laten (embedding).
+Dataset ratings berisi informasi penilaian dari pengguna terhadap film. Terdapat empat kolom utama dalam dataset ini, yaitu userId, movieId, rating, dan timestamp. Setelah dilakukan pencocokan antara dataset ratings.csv dan movies.csv, ditemukan bahwa terdapat 38 movieId di ratings.csv yang tidak memiliki pasangan data film di movies.csv. Contoh movieId yang tidak ditemukan antara lain: 166024, 122888, 122896, 167570, 140956. Hal ini bisa terjadi karena perbedaan versi data atau ketidaksesuaian dalam proses penggabungan data. Untuk memastikan konsistensi dan menghindari error saat penggabungan (merge), seluruh baris di ratings.csv yang memiliki movieId tidak ditemukan di movies.csv telah dihapus.
 
-6. Pembagian Data (Train-Test Split)
-Data rating dibagi ke dalam training set dan testing set, biasanya dengan rasio 80:20.
+Distribusi nilai rating berada pada rentang 0.5 hingga 5.0, dengan interval 0.5, yang mencerminkan tingkat kepuasan pengguna terhadap film. Nilai ini sangat penting dalam pendekatan collaborative filtering, di mana pola rating digunakan untuk mempelajari preferensi pengguna dan menghasilkan rekomendasi yang personal.
 
-Alasan:
-Pemodelan perlu diuji pada data yang tidak pernah dilihat sebelumnya untuk menilai performa sistem rekomendasi secara adil dan menghindari overfitting.
-
-
-
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+Sementara itu, kolom timestamp menyimpan informasi waktu kapan rating diberikan. Meskipun tidak selalu digunakan dalam model berbasis embedding, data ini dapat berguna untuk analisis tren atau segmentasi berdasarkan periode waktu tertentu.
 
 ## Modeling
 Pada tahap ini, dilakukan pembangunan dua model sistem rekomendasi menggunakan dua pendekatan berbeda: Content-Based Filtering dan Collaborative Filtering berbasis model (Neural Network). Masing-masing pendekatan ditujukan untuk mengatasi permasalahan yang berbeda serta saling melengkapi satu sama lain.
