@@ -231,7 +231,7 @@ Untuk mengevaluasi performa sistem rekomendasi berbasis Collaborative Filtering 
 
 ![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
 
-Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.8785, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
+Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.9703, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
 
 ### Evaluation untuk Content-Based Filtering
 
@@ -253,7 +253,7 @@ Sebagai contoh, ketika pengguna menyukai film Toy Story, sistem merekomendasikan
 
 Evaluasi performa model dalam proyek ini memberikan kontribusi signifikan terhadap pemahaman bisnis, khususnya dalam menjawab kebutuhan utama pengguna platform streaming: mengurangi kebingungan dalam memilih film dan meningkatkan kepuasan pengalaman menonton. Dua pendekatan utama yang digunakan, yaitu Content-Based Filtering dan Collaborative Filtering, diuji performanya menggunakan metrik evaluasi yang sesuai dengan tujuan bisnis: personalisasi dan akurasi.
 
-Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.8785, yang menunjukkan bahwa model mampu memprediksi rating pengguna terhadap film dengan kesalahan yang relatif kecil. Artinya, rekomendasi yang diberikan mendekati preferensi aktual pengguna, sehingga berpotensi meningkatkan engagement dan loyalitas pengguna terhadap platform.
+Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.9703, yang menunjukkan bahwa model mampu memprediksi rating pengguna terhadap film dengan kesalahan yang relatif kecil. Artinya, rekomendasi yang diberikan mendekati preferensi aktual pengguna, sehingga berpotensi meningkatkan engagement dan loyalitas pengguna terhadap platform.
 
 ### Keterkaitan dengan Problem Statements
 
@@ -279,7 +279,7 @@ Kedua sistem menghasilkan rekomendasi film yang sesuai dengan preferensi penggun
 
 **Meningkatkan relevansi melalui data historis:**
 
-Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara efektif. RMSE sebesar 0.8785 mengindikasikan bahwa prediksi rating cukup akurat. Hal ini menunjukkan bahwa sistem dapat diandalkan dalam memberikan prediksi terhadap film yang belum pernah ditonton oleh pengguna, memperkuat pencapaian Goals.
+Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara efektif. RMSE sebesar 0.9703 mengindikasikan bahwa prediksi rating cukup akurat. Hal ini menunjukkan bahwa sistem dapat diandalkan dalam memberikan prediksi terhadap film yang belum pernah ditonton oleh pengguna, memperkuat pencapaian Goals.
 
 ### Dampak dari Solution Statements
 
