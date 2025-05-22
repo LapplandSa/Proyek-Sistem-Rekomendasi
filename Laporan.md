@@ -127,6 +127,7 @@ Sementara itu, genre yang lebih spesifik atau niche seperti Film-Noir, Western, 
 
 ![Visualisasi Rating](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/rating.png)
 
+Distribusi rating film dalam dataset menunjukkan bahwa sebagian besar pengguna memberikan penilaian yang berada di kisaran menengah hingga tinggi. Rating terbanyak adalah 4.0 dengan 26.809 entri, diikuti oleh rating 3.0 sebanyak 20.038 entri, dan rating 5.0 sebanyak 13.203 entri. Sementara itu, rating rendah seperti 0.5 dan 1.0 hanya diberikan masing-masing sebanyak 1.367 dan 2.809 kali. Pola ini mencerminkan kecenderungan pengguna untuk memberikan penilaian yang positif terhadap film yang mereka tonton, yang dapat menjadi indikasi bahwa data memiliki bias terhadap penilaian yang baik.
 
 ## Data Preparation
 
@@ -159,59 +160,70 @@ Distribusi nilai rating berada pada rentang 0.5 hingga 5.0, dengan interval 0.5,
 Sementara itu, kolom timestamp menyimpan informasi waktu kapan rating diberikan. Meskipun tidak selalu digunakan dalam model berbasis embedding, data ini dapat berguna untuk analisis tren atau segmentasi berdasarkan periode waktu tertentu.
 
 ## Modeling
-Pada tahap ini, dilakukan pembangunan dua model sistem rekomendasi menggunakan dua pendekatan berbeda: Content-Based Filtering dan Collaborative Filtering berbasis model (Neural Network). Masing-masing pendekatan ditujukan untuk mengatasi permasalahan yang berbeda serta saling melengkapi satu sama lain.
+
+Pada tahap ini, dibangun dua model sistem rekomendasi menggunakan pendekatan yang berbeda: Content-Based Filtering dan Collaborative Filtering berbasis model Neural Network. Pendekatan ini dipilih untuk saling melengkapi dalam memberikan rekomendasi yang lebih relevan dan akurat kepada pengguna.
 
 ### Content-Based Filtering
-Pada pendekatan ini, sistem merekomendasikan film berdasarkan kemiripan konten dengan film yang sebelumnya disukai pengguna. Konten yang digunakan adalah genre film.
 
-Langkah-langkah:
-Genre diolah menggunakan TF-IDF Vectorizer untuk membentuk representasi fitur dari setiap film.
+Pendekatan ini merekomendasikan film berdasarkan kemiripan konten dengan film yang sebelumnya disukai oleh pengguna. Informasi konten yang digunakan dalam model ini adalah genre dan tahun rilis film.
 
-Kemudian dihitung cosine similarity antar film.
+**Langkah-langkah:**
 
-Untuk pengguna tertentu, sistem mencari film yang paling mirip dengan yang sudah mereka beri rating tinggi.
+- Genre diformat menggunakan TF-IDF Vectorizer untuk menghasilkan representasi fitur dari setiap film.
 
-Output:
-Top-N rekomendasi diambil dari film yang paling mirip (berdasarkan nilai similarity) dengan film favorit pengguna.
+- Cosine similarity dihitung antar film berdasarkan vektor genre.
 
-Kelebihan:
-Cocok untuk mengatasi cold start problem ketika pengguna belum memberikan banyak rating.
+- Tahun film kemudian turut dipertimbangkan sebagai faktor tambahan untuk meningkatkan relevansi.
 
-Bisa memberikan alasan yang jelas atas rekomendasi (misalnya, film direkomendasikan karena memiliki genre yang sama).
+- Untuk pengguna tertentu, sistem mengidentifikasi film yang telah mereka beri rating tinggi, lalu mencari film lain yang memiliki kemiripan tertinggi (berdasarkan genre dan tahun) dengan film tersebut.
 
-Kekurangan:
-Terbatas pada konten metadata (genre).
+- Top-N film dengan skor kemiripan tertinggi disarankan sebagai rekomendasi.
 
-Tidak bisa merekomendasikan film yang belum pernah diberi rating oleh siapapun sebelumnya (tidak memperhitungkan selera kolektif pengguna lain).
+**Output:**
+
+Top-N rekomendasi berupa daftar film yang paling mirip dengan film favorit pengguna, berdasarkan konten.
+
+**Kelebihan:**
+
+- Cocok untuk menangani cold start problem, terutama ketika data rating pengguna masih sedikit.
+
+- Dapat memberikan alasan rekomendasi yang jelas, misalnya karena film memiliki genre yang sama.
+
+**Kekurangan:**
+
+- Bergantung penuh pada metadata; jika informasi konten terbatas atau tidak akurat, kualitas rekomendasi menurun.
+
+- Tidak memperhitungkan pola kesukaan kolektif dari pengguna lain.
 
 ### Collaborative Filtering Berbasis Model (Neural Network)
+
 Model ini mempelajari pola interaksi antara pengguna dan film menggunakan representasi embedding dan memprediksi rating yang mungkin diberikan pengguna ke film yang belum ditonton.
 
-Langkah-langkah:
-Dibangun model RecommenderNet dengan TensorFlow, terdiri dari dua embedding layer (untuk user dan item), dilanjutkan dengan dot product.
+**Langkah-langkah:**
 
-Input berupa pasangan userId dan movieId.
+- Dibangun model RecommenderNet dengan TensorFlow, terdiri dari dua embedding layer (untuk user dan item), dilanjutkan dengan dot product.
 
-Target adalah rating aktual pengguna terhadap film.
+- Input berupa pasangan userId dan movieId.
 
-Setelah pelatihan, sistem memprediksi rating dari semua film yang belum ditonton oleh pengguna, kemudian mengurutkan berdasarkan nilai prediksi tertinggi.
+- Target adalah rating aktual pengguna terhadap film.
 
-Output:
-Top-N rekomendasi berupa daftar film dengan prediksi rating tertinggi yang belum pernah ditonton oleh pengguna tersebut.
+- Setelah pelatihan, sistem memprediksi rating dari semua film yang belum ditonton oleh pengguna, kemudian mengurutkan berdasarkan nilai prediksi tertinggi.
 
-Kelebihan:
-Mampu menangkap pola kompleks antara pengguna dan item.
+**Output:**
 
-Rekomendasi bersifat personalized berdasarkan preferensi pengguna.
+- Top-N rekomendasi berupa daftar film dengan prediksi rating tertinggi yang belum pernah ditonton oleh pengguna tersebut.
 
-Kekurangan:
-Membutuhkan cukup banyak data rating agar dapat belajar representasi dengan baik.
+**Kelebihan:**
 
-Tidak dapat bekerja optimal pada pengguna baru (cold start problem).
+- Mampu menangkap pola kompleks antara pengguna dan item.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+- Rekomendasi bersifat personalized berdasarkan preferensi pengguna.
+
+**Kekurangan:**
+
+- Membutuhkan cukup banyak data rating agar dapat belajar representasi dengan baik.
+
+- Tidak dapat bekerja optimal pada pengguna baru (cold start problem).
 
 ## Evaluation
 Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
