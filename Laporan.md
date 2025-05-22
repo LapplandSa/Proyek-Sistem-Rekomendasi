@@ -31,10 +31,6 @@ Ricci, F., Rokach, L., & Shapira, B. (2010). Recommender Systems Handbook (pp. 1
 
    Rekomendasi yang tidak mempertimbangkan pola perilaku unik dan preferensi spesifik pengguna berpotensi menghasilkan saran film yang tidak menarik, sehingga menurunkan kepuasan dan engagement pengguna.
 
-**3. Kurangnya integrasi antara data konten film dan perilaku pengguna dalam sistem rekomendasi menurunkan akurasi hasil rekomendasi.**
-  
-   Banyak sistem hanya mengandalkan pendekatan tunggal, seperti content-based filtering atau collaborative filtering, padahal kombinasi keduanya secara hibrida berpotensi menghasilkan rekomendasi yang lebih tepat dan kontekstual.
-
 ### Goals
 
 **1. Mengembangkan sistem rekomendasi film yang mampu mempersonalisasi saran tontonan berdasarkan preferensi pengguna.**
@@ -44,10 +40,6 @@ Ricci, F., Rokach, L., & Shapira, B. (2010). Recommender Systems Handbook (pp. 1
 **2. Meningkatkan relevansi rekomendasi melalui pemanfaatan data historis perilaku pengguna.**
 
    Sistem akan belajar dari pola penilaian dan interaksi pengguna untuk menghasilkan saran film yang sesuai dengan kebiasaan menonton masing-masing individu.
-
-**3. Membangun model rekomendasi hibrida dengan menggabungkan pendekatan content-based dan collaborative filtering.**
-
-   Dengan memanfaatkan informasi konten film (seperti genre) serta data interaksi pengguna (seperti rating), sistem ini diharapkan dapat memberikan prediksi yang lebih akurat dan kontekstual dibandingkan dengan pendekatan tunggal.
 
 ### Solution statements
 
@@ -181,7 +173,9 @@ Pendekatan ini merekomendasikan film berdasarkan kemiripan konten dengan film ya
 
 **Output:**
 
-Top-N rekomendasi berupa daftar film yang paling mirip dengan film favorit pengguna, berdasarkan konten.
+![Result](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result1.png)
+
+Output di atas merupakan hasil dari sistem Content-Based Filtering yang merekomendasikan film berdasarkan kemiripan kontennya, khususnya genre dan tahun rilis. Film yang direkomendasikan seperti Balto, Jumanji, dan Indian in the Cupboard, The menunjukkan kecenderungan kesamaan pada genre Adventure, Children, dan Fantasy. Selain itu, semua film yang muncul dalam rekomendasi berasal dari tahun yang sama, yaitu 1995, yang menunjukkan bahwa sistem juga mempertimbangkan kemiripan waktu rilis sebagai faktor penentu relevansi. Ini penting karena preferensi terhadap film sering kali berkaitan dengan era atau periode tertentu. Dengan demikian, rekomendasi yang diberikan bersifat personal dan kontekstual, menyesuaikan dengan gaya dan era film yang kemungkinan besar disukai oleh pengguna.
 
 **Kelebihan:**
 
@@ -211,7 +205,9 @@ Model ini mempelajari pola interaksi antara pengguna dan film menggunakan repres
 
 **Output:**
 
-- Top-N rekomendasi berupa daftar film dengan prediksi rating tertinggi yang belum pernah ditonton oleh pengguna tersebut.
+![Result](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result2.png)
+
+Output di atas merupakan hasil dari sistem Collaborative Filtering berbasis model (Neural Network), yang memberikan rekomendasi film untuk User ID 1. Rekomendasi ini dihasilkan berdasarkan pola rating yang serupa dari pengguna lain yang memiliki preferensi mirip. Sistem memperkirakan rating yang mungkin diberikan oleh pengguna terhadap film-film yang belum ditonton, kemudian mengurutkannya berdasarkan nilai predicted rating tertinggi. Misalnya, film "The Usual Suspects", "The Shawshank Redemption", dan "The Dark Knight" memiliki nilai prediksi di atas 4.5, yang menunjukkan bahwa sistem memperkirakan pengguna ini sangat mungkin menyukai film-film tersebut. Hasil ini menunjukkan bahwa model mampu menangkap preferensi pengguna dan memberikan saran yang relevan berdasarkan perilaku kolektif pengguna lain dalam dataset.
 
 **Kelebihan:**
 
@@ -226,11 +222,29 @@ Model ini mempelajari pola interaksi antara pengguna dan film menggunakan repres
 - Tidak dapat bekerja optimal pada pengguna baru (cold start problem).
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+### Evaluation untuk Collaborative Filtering
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+Untuk mengevaluasi performa sistem rekomendasi berbasis Collaborative Filtering dengan Neural Network, metrik yang digunakan adalah Root Mean Squared Error (RMSE). RMSE mengukur seberapa jauh nilai rating yang diprediksi oleh model dibandingkan dengan rating sebenarnya yang diberikan oleh pengguna. Nilai RMSE yang lebih kecil menandakan bahwa prediksi model lebih akurat.
 
-**---Ini adalah bagian akhir laporan---**
+![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/RMSE.png)
+
+Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.8785, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
+
+Untuk pendekatan Content-Based Filtering, metrik evaluasi eksplisit seperti RMSE tidak digunakan karena sistem ini tidak memprediksi rating secara langsung. Sebagai gantinya, evaluasi dilakukan secara kualitatif dengan meninjau hasil rekomendasi apakah relevan atau tidak berdasarkan kemiripan konten (genre dan tahun) dari film yang disukai pengguna. Misalnya, untuk User ID 1, sistem berhasil merekomendasikan film yang memiliki kemiripan genre dan tahun dengan film yang telah mereka beri rating tinggi.
+
+### Evaluation untuk Content-Based Filtering
+
+Berbeda dengan Collaborative Filtering yang memprediksi rating dan dievaluasi menggunakan metrik regresi seperti RMSE, pendekatan Content-Based Filtering bertujuan merekomendasikan item berdasarkan kemiripan kontennya (dalam hal ini, genre dan tahun rilis film). Oleh karena itu, metrik evaluasi kuantitatif seperti RMSE tidak relevan.
+
+Sebagai gantinya, performa Content-Based Filtering umumnya dievaluasi melalui:
+
+- Validasi manual: dengan melihat apakah film yang direkomendasikan memang mirip atau relevan dengan film yang disukai pengguna.
+
+- Studi user feedback: meminta pengguna untuk menilai apakah rekomendasi yang diberikan sesuai dengan preferensi mereka.
+
+- Precision@k atau Recall@k (jika tersedia data historis yang cukup): untuk mengukur berapa banyak film yang benar-benar disukai dari daftar rekomendasi.
+
+Namun, dalam proyek ini, karena tidak dilakukan evaluasi berbasis feedback pengguna secara eksplisit, maka hasil evaluasi Content-Based Filtering ditunjukkan melalui analisis kualitatif: yaitu dengan melihat kesesuaian genre dan tahun dari film-film yang direkomendasikan dengan film yang sebelumnya disukai oleh pengguna. Pendekatan ini juga bermanfaat pada situasi cold-start, di mana data interaksi pengguna sangat terbatas.
+
+Sebagai contoh, ketika pengguna menyukai film Toy Story, sistem merekomendasikan film lain seperti Jumanji, Balto, dan Wallace & Gromit: A Close Shave. Film-film ini memiliki genre serupa, yaitu Adventure, Animation, dan Children, serta dirilis pada tahun yang sama (1995). Hal ini menunjukkan bahwa sistem dapat mengenali kemiripan berdasarkan konten (genre + tahun), dan mampu memberikan rekomendasi yang konsisten dengan preferensi pengguna.
