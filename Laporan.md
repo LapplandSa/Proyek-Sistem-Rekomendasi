@@ -225,13 +225,13 @@ Output di atas merupakan hasil dari sistem Collaborative Filtering berbasis mode
 
 ### Evaluation untuk Collaborative Filtering
 
-Untuk mengevaluasi performa sistem rekomendasi berbasis Collaborative Filtering dengan Neural Network, metrik yang digunakan adalah Root Mean Squared Error (RMSE). RMSE mengukur seberapa jauh nilai rating yang diprediksi oleh model dibandingkan dengan rating sebenarnya yang diberikan oleh pengguna. Nilai RMSE yang lebih kecil menandakan bahwa prediksi model lebih akurat.
-
 ![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/RMSE.png)
 
-Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.8785, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
+Untuk mengevaluasi performa sistem rekomendasi berbasis Collaborative Filtering dengan Neural Network, metrik yang digunakan adalah Root Mean Squared Error (RMSE). RMSE mengukur seberapa jauh nilai rating yang diprediksi oleh model dibandingkan dengan rating sebenarnya yang diberikan oleh pengguna. Nilai RMSE yang lebih kecil menandakan bahwa prediksi model lebih akurat.
 
-Untuk pendekatan Content-Based Filtering, metrik evaluasi eksplisit seperti RMSE tidak digunakan karena sistem ini tidak memprediksi rating secara langsung. Sebagai gantinya, evaluasi dilakukan secara kualitatif dengan meninjau hasil rekomendasi apakah relevan atau tidak berdasarkan kemiripan konten (genre dan tahun) dari film yang disukai pengguna. Misalnya, untuk User ID 1, sistem berhasil merekomendasikan film yang memiliki kemiripan genre dan tahun dengan film yang telah mereka beri rating tinggi.
+![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
+
+Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.8785, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
 
 ### Evaluation untuk Content-Based Filtering
 
@@ -248,3 +248,49 @@ Sebagai gantinya, performa Content-Based Filtering umumnya dievaluasi melalui:
 Namun, dalam proyek ini, karena tidak dilakukan evaluasi berbasis feedback pengguna secara eksplisit, maka hasil evaluasi Content-Based Filtering ditunjukkan melalui analisis kualitatif: yaitu dengan melihat kesesuaian genre dan tahun dari film-film yang direkomendasikan dengan film yang sebelumnya disukai oleh pengguna. Pendekatan ini juga bermanfaat pada situasi cold-start, di mana data interaksi pengguna sangat terbatas.
 
 Sebagai contoh, ketika pengguna menyukai film Toy Story, sistem merekomendasikan film lain seperti Jumanji, Balto, dan Wallace & Gromit: A Close Shave. Film-film ini memiliki genre serupa, yaitu Adventure, Animation, dan Children, serta dirilis pada tahun yang sama (1995). Hal ini menunjukkan bahwa sistem dapat mengenali kemiripan berdasarkan konten (genre + tahun), dan mampu memberikan rekomendasi yang konsisten dengan preferensi pengguna.
+
+### Keterkaitan dengan Business Understanding
+
+Evaluasi performa model dalam proyek ini memberikan kontribusi signifikan terhadap pemahaman bisnis, khususnya dalam menjawab kebutuhan utama pengguna platform streaming: mengurangi kebingungan dalam memilih film dan meningkatkan kepuasan pengalaman menonton. Dua pendekatan utama yang digunakan, yaitu Content-Based Filtering dan Collaborative Filtering, diuji performanya menggunakan metrik evaluasi yang sesuai dengan tujuan bisnis: personalisasi dan akurasi.
+
+Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.8785, yang menunjukkan bahwa model mampu memprediksi rating pengguna terhadap film dengan kesalahan yang relatif kecil. Artinya, rekomendasi yang diberikan mendekati preferensi aktual pengguna, sehingga berpotensi meningkatkan engagement dan loyalitas pengguna terhadap platform.
+
+### Keterkaitan dengan Problem Statements
+
+**Mengatasi banyaknya pilihan film (information overload):**
+
+Dengan menghasilkan 5 rekomendasi film yang paling sesuai berdasarkan estimasi rating tertinggi, sistem membantu pengguna dalam menyaring ribuan film yang tersedia, sehingga secara langsung mengatasi Problem Statement 1 mengenai overload informasi.
+
+**Memberikan rekomendasi yang relevan secara personal:**
+
+Model berhasil memberikan daftar rekomendasi yang bersifat personal berdasarkan interaksi dan preferensi pengguna. Sebagai contoh, untuk User ID 1, sistem merekomendasikan film seperti The Usual Suspects, The Shawshank Redemption, dan The Dark Knight, yang umumnya memiliki genre yang konsisten dengan film-film yang disukai pengguna tersebut. Ini menjawab secara langsung Problem Statement 2 mengenai pentingnya relevansi dalam rekomendasi.
+
+### Evaluasi Terhadap Goals
+
+**Membangun sistem rekomendasi personalisasi:**
+
+Tercapai melalui dua pendekatan utama:
+
+- Content-Based Filtering menggunakan genre dan tahun rilis film yang diproses dengan TF-IDF dan cosine similarity.
+
+- Collaborative Filtering dengan embedding pengguna dan film menggunakan neural network untuk mempelajari preferensi secara implisit.
+
+Kedua sistem menghasilkan rekomendasi film yang sesuai dengan preferensi pengguna, baik berdasarkan konten maupun perilaku pengguna lain.
+
+**Meningkatkan relevansi melalui data historis:**
+
+Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara efektif. RMSE sebesar 0.8785 mengindikasikan bahwa prediksi rating cukup akurat. Hal ini menunjukkan bahwa sistem dapat diandalkan dalam memberikan prediksi terhadap film yang belum pernah ditonton oleh pengguna, memperkuat pencapaian Goals.
+
+### Dampak dari Solution Statements
+
+**Content-Based Filtering:**
+
+Pendekatan ini berhasil menangani kasus cold-start, terutama untuk pengguna baru yang belum memiliki riwayat interaksi. Dengan memanfaatkan informasi genre dan tahun film menggunakan TF-IDF dan cosine similarity, sistem dapat menemukan film yang mirip dengan film yang disukai sebelumnya.
+
+Contoh output:
+
+Untuk film "Toy Story", sistem merekomendasikan film lain yang serupa dari segi genre dan tahun, seperti Jumanji dan Balto, yang semuanya merupakan film anak dan animasi tahun 1995.
+
+**Collaborative Filtering:**
+
+Dengan memanfaatkan embedding pengguna dan film melalui neural network, sistem dapat memberikan rekomendasi yang lebih personal berdasarkan pola interaksi seluruh pengguna. Model ini juga mampu menangkap preferensi yang tidak eksplisit dari metadata film, menghasilkan rekomendasi yang lebih dalam dan bermakna.
