@@ -163,7 +163,7 @@ Setelah itu, dua kolom yaitu genres dan year digabungkan menjadi satu kolom baru
 
 Setelah representasi teks genre_year berhasil dibuat pada tahap sebelumnya, langkah selanjutnya adalah mengubah teks tersebut menjadi bentuk numerik agar dapat digunakan sebagai input pada sistem rekomendasi berbasis konten (Content-Based Filtering). Teknik yang digunakan untuk proses ini adalah TF-IDF (Term Frequency-Inverse Document Frequency), yang merupakan metode umum dalam ekstraksi fitur dari data teks.
 
-TF-IDF memberikan bobot pada setiap kata (fitur) berdasarkan frekuensinya dalam satu dokumen relatif terhadap frekuensinya di seluruh dokumen. Dalam hal ini, setiap film dianggap sebagai sebuah dokumen, dan genre_year berisi kata-kata yang mewakili genre dan tahun rilis film.
+TF-IDF memberikan bobot pada setiap kata (fitur) berdasarkan frekuensinya dalam satu dokumen relatif terhadap frekuensinya di seluruh dokumen. Dalam hal ini, setiap film dianggap sebagai sebuah dokumen, dan genre_year_boosted berisi kata-kata yang mewakili genre dan tahun rilis film.
 
 Inisialisasi TfidfVectorizer dilakukan dengan parameter token_pattern=r'[^| ]+', yang memungkinkan tokenisasi berdasarkan pemisah seperti | dan spasi, sesuai dengan format data genre pada dataset. Setelah vektorisasi dilakukan dengan fit_transform, dihasilkan sebuah matriks TF-IDF (tfidf_matrix) yang merepresentasikan setiap film sebagai vektor berdimensi sejumlah kata unik yang terdapat di seluruh korpus genre_year.
 
