@@ -151,25 +151,75 @@ Distribusi nilai rating berada pada rentang 0.5 hingga 5.0, dengan interval 0.5,
 
 Sementara itu, kolom timestamp menyimpan informasi waktu kapan rating diberikan. Meskipun tidak selalu digunakan dalam model berbasis embedding, data ini dapat berguna untuk analisis tren atau segmentasi berdasarkan periode waktu tertentu.
 
+### Content-Based Filtering
+
+#### Text Preprocessing (pada metadata film)
+
+Pada tahap ini, dilakukan proses awal untuk menyiapkan fitur konten yang akan digunakan dalam pendekatan Content-Based Filtering. Informasi yang digunakan adalah kombinasi dari genre dan tahun rilis film. Langkah pertama adalah memastikan bahwa kolom year bertipe string agar dapat digabungkan dengan teks genre. Ini dilakukan dengan mengubah tipe data kolom year menggunakan fungsi .astype(str).
+
+Setelah itu, dua kolom yaitu genres dan year digabungkan menjadi satu kolom baru bernama genre_year. Penggabungan ini bertujuan untuk menghasilkan representasi teks yang menyatukan kategori genre dan konteks waktu, sehingga dapat memberikan bobot tambahan pada vektor fitur yang dihasilkan pada tahap TF-IDF. Sebagai contoh, film dengan genre Action dari tahun 1999 akan memiliki string fitur seperti “Action 1999”. Representasi ini akan menjadi dasar untuk membangun matriks kesamaan antar film pada tahap berikutnya.
+
+#### TF-IDF Vectorization (Feature Extraction)
+
+Setelah representasi teks genre_year berhasil dibuat pada tahap sebelumnya, langkah selanjutnya adalah mengubah teks tersebut menjadi bentuk numerik agar dapat digunakan sebagai input pada sistem rekomendasi berbasis konten (Content-Based Filtering). Teknik yang digunakan untuk proses ini adalah TF-IDF (Term Frequency-Inverse Document Frequency), yang merupakan metode umum dalam ekstraksi fitur dari data teks.
+
+TF-IDF memberikan bobot pada setiap kata (fitur) berdasarkan frekuensinya dalam satu dokumen relatif terhadap frekuensinya di seluruh dokumen. Dalam hal ini, setiap film dianggap sebagai sebuah dokumen, dan genre_year berisi kata-kata yang mewakili genre dan tahun rilis film.
+
+Inisialisasi TfidfVectorizer dilakukan dengan parameter token_pattern=r'[^| ]+', yang memungkinkan tokenisasi berdasarkan pemisah seperti | dan spasi, sesuai dengan format data genre pada dataset. Setelah vektorisasi dilakukan dengan fit_transform, dihasilkan sebuah matriks TF-IDF (tfidf_matrix) yang merepresentasikan setiap film sebagai vektor berdimensi sejumlah kata unik yang terdapat di seluruh korpus genre_year.
+
+Sebagai langkah tambahan untuk keperluan interpretasi dan debugging, matriks ini kemudian dikonversi menjadi sebuah DataFrame (tfidf_df) dengan indeks berupa judul film dan kolom-kolom yang mewakili setiap fitur (kata) yang diekstrak. Matriks ini akan digunakan dalam proses perhitungan kesamaan antar film menggunakan cosine similarity pada tahap selanjutnya dalam sistem rekomendasi berbasis konten.
+
+### Collaborative Filtering
+
+#### Encoding/Mapping
+
+Dalam sistem rekomendasi berbasis kolaboratif, model memerlukan input dalam bentuk numerik terstruktur, terutama untuk entitas diskret seperti userId dan movieId. Oleh karena itu, dilakukan proses encoding, yaitu mengubah nilai-nilai userId dan movieId asli menjadi indeks numerik berurutan. Proses ini dilakukan dengan membangun dua buah kamus pemetaan: user_to_user_encoded untuk memetakan userId ke indeks, dan movie_to_movie_encoded untuk movieId. Kebalikannya, user_encoded_to_user dan movie_encoded_to_movie digunakan untuk mengubah kembali dari indeks ke ID asli jika diperlukan.
+
+Setelah kamus pemetaan dibuat, kolom userId dan movieId pada DataFrame ratings kemudian dipetakan ke kolom baru user dan movie yang berisi hasil encoding. Proses ini penting agar data dapat digunakan dalam model embedding yang mengasumsikan entitas dikodekan sebagai indeks integer dari 0 hingga N.
+
+#### Normalisasi Rating
+
+Sebelum digunakan dalam proses pelatihan model, kolom rating perlu dinormalisasi dan dikonversi ke tipe data yang sesuai. Pada tahap ini, semua nilai pada kolom rating diubah menjadi tipe float32 untuk efisiensi komputasi dan kompatibilitas dengan TensorFlow. Selain itu, meskipun belum dilakukan normalisasi skala langsung dalam kode ini, model yang digunakan meng-output nilai dalam rentang [0, 1] akibat penggunaan fungsi aktivasi sigmoid. Oleh karena itu, selama pelatihan model, nilai rating akan dinormalisasi secara eksplisit (dalam proses model.fit) dengan membagi nilai rating aktual dengan 5, agar berada pada skala yang sama dengan output model.
+
+Informasi tambahan seperti jumlah total pengguna (num_users), jumlah total film (num_movies), dan rentang rating (minimum hingga maksimum) juga dicetak untuk memberikan konteks terhadap skala data dan memverifikasi integritas preprocessing sebelum digunakan lebih lanjut.
+
+#### Data Splitting
+
+Setelah seluruh data telah melalui proses encoding dan normalisasi, langkah selanjutnya adalah membagi data ke dalam dua subset: data latih (train) dan data uji (test). Pembagian ini bertujuan untuk mengukur kemampuan generalisasi model terhadap data yang belum pernah dilihat sebelumnya.
+
+Proses pembagian dilakukan menggunakan fungsi train_test_split dari library scikit-learn, dengan proporsi 80% data digunakan untuk pelatihan dan 20% sisanya untuk pengujian. Parameter random_state=42 digunakan untuk memastikan bahwa hasil pembagian bersifat reproducible, sehingga eksperimen dapat diulang dengan hasil yang konsisten. Pembagian dilakukan tanpa stratifikasi karena data merupakan interaksi user-item yang bersifat numerik dan kontinu, sehingga tidak memiliki label kelas yang perlu dipertahankan distribusinya.
+
+Setelah pembagian, bentuk (shape) dari masing-masing subset dicetak sebagai verifikasi akhir, memastikan bahwa data telah berhasil dipisahkan dan siap digunakan dalam proses pelatihan dan evaluasi model rekomendasi.
+
+#### Feature dan Label Separation
+
+Setelah data pelatihan dan pengujian dipersiapkan, langkah selanjutnya adalah memisahkan fitur (input) dan label (target) yang akan digunakan dalam proses pelatihan model. Fitur yang digunakan terdiri dari pasangan (user, movie) yang telah melalui proses encoding sebelumnya. Sementara itu, label yang menjadi target prediksi adalah nilai rating dari setiap interaksi pengguna terhadap film.
+
+Untuk memisahkan data tersebut, digunakan slicing terhadap kolom-kolom pada DataFrame train dan test. Kolom user dan movie disatukan menjadi variabel x_train dan x_test sebagai fitur input, sedangkan kolom rating diambil sebagai y_train dan y_test sebagai label target. Pemisahan ini penting untuk memastikan bahwa model hanya menerima informasi yang dibutuhkan untuk melakukan prediksi terhadap rating berdasarkan kombinasi pengguna dan film tertentu.
+
 ## Modeling
 
 Pada tahap ini, dibangun dua model sistem rekomendasi menggunakan pendekatan yang berbeda: Content-Based Filtering dan Collaborative Filtering berbasis model Neural Network. Pendekatan ini dipilih untuk saling melengkapi dalam memberikan rekomendasi yang lebih relevan dan akurat kepada pengguna.
 
 ### Content-Based Filtering
 
-Pendekatan ini merekomendasikan film berdasarkan kemiripan konten dengan film yang sebelumnya disukai oleh pengguna. Informasi konten yang digunakan dalam model ini adalah genre dan tahun rilis film.
+Pendekatan Content-Based Filtering pada sistem rekomendasi ini dibangun dengan memanfaatkan metadata film, khususnya kolom genres dan year. Setelah dilakukan preprocessing dan penggabungan informasi tersebut ke dalam satu kolom genre_year, dilakukan ekstraksi fitur menggunakan metode TF-IDF (Term Frequency–Inverse Document Frequency). TF-IDF membantu merepresentasikan setiap film sebagai vektor berdasarkan kata-kata yang muncul di genre dan tahun rilisnya, sehingga film dengan genre serupa memiliki representasi vektor yang lebih mirip.
+
+Setelah vektorisasi selesai, dihitung kemiripan antar film menggunakan cosine similarity, yang direpresentasikan dalam bentuk matriks. Kemiripan ini dihitung menggunakan fungsi linear_kernel dari sklearn.metrics.pairwise, yang secara efisien menghasilkan skor kemiripan antara seluruh pasangan film dalam bentuk matriks simetri.
+
+Untuk memberikan rekomendasi, dikembangkan sebuah fungsi recommend(title, top_n=10) yang menerima masukan judul film dan mengembalikan daftar film lain yang paling mirip. Fungsi ini bekerja dengan mengambil indeks film yang diminta, mencari skor kemiripan tertinggi terhadap film lain (kecuali dirinya sendiri), dan mengembalikan top-N film berdasarkan nilai kemiripan tertinggi. Hasil rekomendasi berupa informasi judul, genre, dan tahun rilis dari film-film yang dianggap paling relevan dengan input pengguna.
 
 **Langkah-langkah:**
 
-- Genre diformat menggunakan TF-IDF Vectorizer untuk menghasilkan representasi fitur dari setiap film.
+- Kolom genres dan year digabung menjadi satu fitur teks untuk mewakili konten film.
 
-- Cosine similarity dihitung antar film berdasarkan vektor genre.
+- Fitur tersebut diproses menggunakan TF-IDF Vectorizer, yang mengubah teks menjadi vektor numerik berdasarkan frekuensi dan kekhasan kata dalam dokumen.
 
-- Tahun film kemudian turut dipertimbangkan sebagai faktor tambahan untuk meningkatkan relevansi.
+- Dihitung cosine similarity antar film berdasarkan representasi vektor TF-IDF.
 
-- Untuk pengguna tertentu, sistem mengidentifikasi film yang telah mereka beri rating tinggi, lalu mencari film lain yang memiliki kemiripan tertinggi (berdasarkan genre dan tahun) dengan film tersebut.
+- Untuk pengguna tertentu, sistem mengidentifikasi film-film yang telah mereka beri rating tinggi, lalu mencari film lain dengan kemiripan tertinggi terhadap film-film tersebut.
 
-- Top-N film dengan skor kemiripan tertinggi disarankan sebagai rekomendasi.
+- Sistem menghasilkan top-N rekomendasi berdasarkan skor kemiripan tertinggi.
 
 **Output:**
 
@@ -179,19 +229,39 @@ Output di atas merupakan hasil dari sistem Content-Based Filtering yang merekome
 
 **Kelebihan:**
 
-- Cocok untuk menangani cold start problem, terutama ketika data rating pengguna masih sedikit.
+- Efektif untuk menghadapi cold start pada pengguna baru karena tidak memerlukan data perilaku pengguna lain.
 
-- Dapat memberikan alasan rekomendasi yang jelas, misalnya karena film memiliki genre yang sama.
+- Rekomendasi dapat dijelaskan secara eksplisit berdasarkan atribut film (misalnya genre).
 
 **Kekurangan:**
 
-- Bergantung penuh pada metadata; jika informasi konten terbatas atau tidak akurat, kualitas rekomendasi menurun.
+- Sangat bergantung pada kualitas dan kelengkapan metadata film.
 
-- Tidak memperhitungkan pola kesukaan kolektif dari pengguna lain.
+- Tidak memanfaatkan pola preferensi kolektif dari komunitas pengguna, sehingga bisa kehilangan konteks sosial.
 
 ### Collaborative Filtering Berbasis Model (Neural Network)
 
-Model ini mempelajari pola interaksi antara pengguna dan film menggunakan representasi embedding dan memprediksi rating yang mungkin diberikan pengguna ke film yang belum ditonton.
+Model Collaborative Filtering dalam proyek ini dibangun menggunakan pendekatan Deep Learning, di mana relasi antara pengguna dan film direpresentasikan dalam bentuk embedding. Model ini bertujuan untuk mempelajari preferensi pengguna berdasarkan interaksinya dengan berbagai film, tanpa memanfaatkan metadata konten film secara eksplisit.
+
+**Arsitektur Model**
+
+Model dikembangkan dalam bentuk kelas RecommenderNet, yang merupakan subclass dari tf.keras.Model. Di dalamnya terdapat dua embedding utama:
+
+- User Embedding: Menyandikan representasi vektor untuk setiap pengguna berdasarkan indeks user.
+
+- Movie Embedding: Menyandikan representasi vektor untuk setiap film berdasarkan indeks movie.
+
+Masing-masing embedding memiliki ukuran vektor sebesar 50 dimensi, yang dipilih sebagai hyperparameter embedding_size. Selain vektor embedding, model juga menyertakan bias term untuk pengguna dan film dalam bentuk layer Embedding tambahan.
+
+Pada saat inferensi, model menghitung produk dot (dot product) antara vektor user dan vektor movie, kemudian menambahkan bias user dan movie. Hasil akhirnya diproses melalui fungsi aktivasi sigmoid sehingga nilai output berada dalam rentang 0 hingga 1. Karena rating asli berada pada skala 0–5, target output distandarisasi ke dalam rentang 0–1 dengan cara membagi nilai rating dengan 5 selama pelatihan.
+
+**Proses Pelatihan**
+
+Model dikompilasi dengan menggunakan fungsi loss Mean Squared Error (MSE), karena tugas utama adalah regresi nilai rating. Optimizer yang digunakan adalah Adam dengan learning rate sebesar 0.001. Selama pelatihan, metrik evaluasi yang dipantau adalah Root Mean Squared Error (RMSE).
+
+Model dilatih selama 10 epoch dengan ukuran batch sebesar 64, dan divalidasi terhadap set data pengujian. Data pelatihan dan pengujian merupakan hasil dari proses split sebesar 80:20 dari dataset awal, di mana fitur user dan movie digunakan sebagai input, dan kolom rating digunakan sebagai target.
+
+Pendekatan ini mampu menangkap pola kolaboratif antara pengguna dan item, sehingga menghasilkan rekomendasi berdasarkan perilaku pengguna lain yang mirip, meskipun tidak memiliki informasi eksplisit tentang genre atau tahun film.
 
 **Langkah-langkah:**
 
@@ -207,7 +277,7 @@ Model ini mempelajari pola interaksi antara pengguna dan film menggunakan repres
 
 ![Result](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result2.png)
 
-Output di atas merupakan hasil dari sistem Collaborative Filtering berbasis model (Neural Network), yang memberikan rekomendasi film untuk User ID 1. Rekomendasi ini dihasilkan berdasarkan pola rating yang serupa dari pengguna lain yang memiliki preferensi mirip. Sistem memperkirakan rating yang mungkin diberikan oleh pengguna terhadap film-film yang belum ditonton, kemudian mengurutkannya berdasarkan nilai predicted rating tertinggi. Misalnya, film "The Usual Suspects", "The Shawshank Redemption", dan "The Dark Knight" memiliki nilai prediksi di atas 4.5, yang menunjukkan bahwa sistem memperkirakan pengguna ini sangat mungkin menyukai film-film tersebut. Hasil ini menunjukkan bahwa model mampu menangkap preferensi pengguna dan memberikan saran yang relevan berdasarkan perilaku kolektif pengguna lain dalam dataset.
+Model rekomendasi berbasis deep learning yang telah dibangun menghasilkan daftar film yang diprediksi akan disukai oleh pengguna dengan User ID 1. Rekomendasi ini dibuat berdasarkan prediksi rating tertinggi yang diberikan oleh model terhadap film-film yang belum ditonton oleh pengguna tersebut. Hasilnya menunjukkan bahwa film "Shawshank Redemption, The" menempati urutan teratas dengan prediksi rating sebesar 4.70, diikuti oleh "Godfather, The" dan "Princess Bride, The" yang masing-masing memperoleh nilai 4.65. Film lainnya seperti "Raiders of the Lost Ark" dan "Fight Club" juga memiliki skor prediksi yang sangat tinggi, yaitu sekitar 4.64. Seluruh prediksi ini berada dalam rentang 0 hingga 5, yang telah diskalakan kembali dari output sigmoid model. Rekomendasi ini mencerminkan preferensi pengguna yang ditangkap oleh representasi embedding dari user dan film, sehingga model dapat memprediksi kecenderungan pengguna terhadap film dengan cukup akurat.
 
 **Kelebihan:**
 
