@@ -305,9 +305,11 @@ Rekomendasi ini menunjukkan bahwa model mampu mengidentifikasi pola preferensi p
 
 Evaluasi pada sistem rekomendasi berbasis konten (Content-Based Filtering) dilakukan dengan menghitung metrik Precision@10, yang mengukur seberapa relevan rekomendasi yang diberikan terhadap preferensi pengguna. Dalam konteks ini, relevansi didefinisikan sebagai film yang memiliki genre yang sama persis dengan film yang menjadi input (dalam hal ini, Toy Story dengan genre: Adventure|Animation|Children|Comedy|Fantasy).
 
-![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
+![Precision](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result6.png)
 
 Dari 10 film yang direkomendasikan, seluruhnya memiliki genre yang sama persis dengan film Toy Story. Oleh karena itu, sistem menghasilkan nilai evaluasi:
+
+![Precision](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
 
 Precision@10: 1.0
 
