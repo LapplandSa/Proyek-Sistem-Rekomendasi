@@ -337,11 +337,11 @@ Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.9623, yan
 
 **Mengatasi banyaknya pilihan film (information overload):**
 
-Dengan menghasilkan 5 rekomendasi film yang paling sesuai berdasarkan estimasi rating tertinggi, sistem membantu pengguna dalam menyaring ribuan film yang tersedia, sehingga secara langsung mengatasi Problem Statement 1 mengenai overload informasi.
+Dengan menghasilkan 10 rekomendasi film yang paling sesuai berdasarkan estimasi rating tertinggi, sistem membantu pengguna dalam menyaring ribuan film yang tersedia, sehingga secara langsung mengatasi Problem Statement 1 mengenai overload informasi.
 
 **Memberikan rekomendasi yang relevan secara personal:**
 
-Model berhasil memberikan daftar rekomendasi yang bersifat personal berdasarkan interaksi dan preferensi pengguna. Sebagai contoh, untuk User ID 1, sistem merekomendasikan film seperti The Usual Suspects, The Shawshank Redemption, dan The Dark Knight, yang umumnya memiliki genre yang konsisten dengan film-film yang disukai pengguna tersebut. Ini menjawab secara langsung Problem Statement 2 mengenai pentingnya relevansi dalam rekomendasi.
+Model rekomendasi yang dikembangkan berhasil memberikan daftar film yang relevan secara personal berdasarkan preferensi pengguna. Sebagai contoh, untuk User ID 1, sistem merekomendasikan sejumlah film dengan prediksi rating tinggi, seperti The Usual Suspects, Star Wars: Episode IV - A New Hope, Forrest Gump, Princess Bride, The, dan Raiders of the Lost Ark. Film-film tersebut umumnya memiliki genre dan karakteristik yang sejalan dengan minat pengguna, sehingga menunjukkan kemampuan model dalam menangkap selera dan memberikan rekomendasi yang tepat. Hasil ini secara langsung menjawab kebutuhan dalam Problem Statement 2, yang menekankan pentingnya relevansi dan personalisasi dalam sistem rekomendasi untuk meningkatkan kepuasan pengguna.
 
 ### Evaluasi Terhadap Goals
 
@@ -363,12 +363,14 @@ Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara 
 
 **Content-Based Filtering:**
 
-Pendekatan ini berhasil menangani kasus cold-start, terutama untuk pengguna baru yang belum memiliki riwayat interaksi. Dengan memanfaatkan informasi genre dan tahun film menggunakan TF-IDF dan cosine similarity, sistem dapat menemukan film yang mirip dengan film yang disukai sebelumnya.
+Pendekatan Content-Based Filtering yang digunakan berhasil mengatasi masalah cold-start, khususnya untuk pengguna baru yang belum memiliki data interaksi sebelumnya. Sistem memanfaatkan informasi metadata film, yaitu genre dan tahun rilis, yang diolah menggunakan teknik TF-IDF dan diukur kemiripannya dengan cosine similarity. Dengan cara ini, sistem dapat merekomendasikan film-film yang memiliki kemiripan konten dengan film yang sudah disukai pengguna sebelumnya.
 
-Contoh output:
-
-Untuk film "Toy Story", sistem merekomendasikan film lain yang serupa dari segi genre dan tahun, seperti Jumanji dan Balto, yang semuanya merupakan film anak dan animasi tahun 1995.
+Sebagai contoh, untuk film Toy Story, sistem memberikan rekomendasi film-film lain yang memiliki genre serupa, yaitu Adventure, Animation, Children, Comedy, dan Fantasy, meskipun tahun rilisnya bervariasi. Beberapa film yang direkomendasikan antara lain Wild, The (2006), Asterix and the Vikings (2006), Monsters, Inc. (2001), Shrek the Third (2007), dan Toy Story 2 (1999). Rekomendasi ini menunjukkan bahwa model mampu mengenali kesamaan genre secara efektif untuk menghasilkan daftar film yang relevan dan sesuai dengan preferensi konten pengguna.
 
 **Collaborative Filtering:**
 
-Dengan memanfaatkan embedding pengguna dan film melalui neural network, sistem dapat memberikan rekomendasi yang lebih personal berdasarkan pola interaksi seluruh pengguna. Model ini juga mampu menangkap preferensi yang tidak eksplisit dari metadata film, menghasilkan rekomendasi yang lebih dalam dan bermakna.
+Pendekatan Collaborative Filtering yang diterapkan menggunakan embedding pengguna dan film yang dipelajari melalui neural network. Dengan cara ini, sistem tidak hanya bergantung pada metadata film seperti genre atau tahun, tetapi juga pada pola interaksi riil dari seluruh pengguna, seperti rating yang diberikan terhadap film-film tertentu. Embedding ini merepresentasikan preferensi pengguna dan karakteristik film dalam ruang fitur berdimensi rendah, sehingga memungkinkan model mengenali hubungan kompleks yang tidak terlihat secara eksplisit dari metadata.
+
+Keunggulan metode ini adalah kemampuannya untuk menangkap preferensi individual pengguna dengan lebih akurat, termasuk minat yang unik dan tidak mudah dijelaskan hanya dengan genre atau atribut lain. Misalnya, dua pengguna yang menyukai film dengan genre berbeda tapi memiliki kesamaan dalam pola rating film tertentu dapat diberikan rekomendasi yang relevan berdasarkan kesamaan embedding mereka.
+
+Dengan demikian, Collaborative Filtering mampu memberikan rekomendasi yang lebih personal dan bermakna, meningkatkan kepuasan pengguna karena sistem belajar dari perilaku kolektif dan preferensi tersembunyi yang tidak dapat diwakili oleh metode berbasis konten saja.
