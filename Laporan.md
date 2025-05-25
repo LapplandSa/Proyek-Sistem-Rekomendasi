@@ -155,19 +155,19 @@ Sementara itu, kolom timestamp menyimpan informasi waktu kapan rating diberikan.
 
 #### Text Preprocessing (pada metadata film)
 
-Pada tahap ini, dilakukan proses awal untuk menyiapkan fitur konten yang akan digunakan dalam pendekatan Content-Based Filtering. Informasi yang digunakan adalah kombinasi dari genre dan tahun rilis film. Langkah pertama adalah memastikan bahwa kolom year bertipe string agar dapat digabungkan dengan teks genre. Ini dilakukan dengan mengubah tipe data kolom year menggunakan fungsi .astype(str).
+Dalam tahap preprocessing metadata film, dilakukan beberapa transformasi terhadap informasi genre dan tahun rilis untuk memperkuat representasi konten yang akan digunakan dalam sistem rekomendasi berbasis Content-Based Filtering. Pertama, kolom year diubah menjadi tipe data string agar dapat digabungkan dengan informasi genre dalam satu representasi teks. Selanjutnya, kolom baru bernama genre_year dibentuk dengan menggabungkan informasi genres dan year pada setiap film. Tujuannya adalah untuk menciptakan fitur teks gabungan yang merepresentasikan karakteristik utama film dalam bentuk yang dapat dianalisis menggunakan teknik berbasis teks seperti TF-IDF.
 
-Setelah itu, dua kolom yaitu genres dan year digabungkan menjadi satu kolom baru bernama genre_year. Penggabungan ini bertujuan untuk menghasilkan representasi teks yang menyatukan kategori genre dan konteks waktu, sehingga dapat memberikan bobot tambahan pada vektor fitur yang dihasilkan pada tahap TF-IDF. Sebagai contoh, film dengan genre Action dari tahun 1999 akan memiliki string fitur seperti “Action 1999”. Representasi ini akan menjadi dasar untuk membangun matriks kesamaan antar film pada tahap berikutnya.
+Selain itu, dibuat juga kolom genre_year_boosted dengan menduplikasi informasi genre dalam string hasil gabungan. Pada kolom ini, genre disebutkan dua kali sebelum ditambahkan dengan tahun rilis film. Pendekatan ini bertujuan untuk meningkatkan bobot informasi genre dalam proses ekstraksi fitur selanjutnya, sehingga model akan lebih memprioritaskan kesamaan genre dibandingkan kesamaan tahun rilis. Teknik boosting semacam ini berguna dalam kasus di mana preferensi pengguna lebih dipengaruhi oleh kesamaan genre daripada faktor lain. Transformasi ini merupakan langkah penting dalam membangun model Content-Based Filtering yang lebih sensitif terhadap atribut-atribut konten yang relevan.
 
 #### TF-IDF Vectorization (Feature Extraction)
 
-Setelah representasi teks genre_year berhasil dibuat pada tahap sebelumnya, langkah selanjutnya adalah mengubah teks tersebut menjadi bentuk numerik agar dapat digunakan sebagai input pada sistem rekomendasi berbasis konten (Content-Based Filtering). Teknik yang digunakan untuk proses ini adalah TF-IDF (Term Frequency-Inverse Document Frequency), yang merupakan metode umum dalam ekstraksi fitur dari data teks.
+Setelah representasi teks genre_year_boosted berhasil dibuat pada tahap preprocessing, langkah selanjutnya adalah mengubah teks tersebut menjadi bentuk numerik agar dapat digunakan dalam sistem rekomendasi berbasis konten (Content-Based Filtering). Proses ini dilakukan dengan menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency), yang berfungsi untuk memberikan bobot pada setiap kata berdasarkan frekuensinya dalam dokumen tertentu relatif terhadap seluruh dokumen dalam korpus. Dalam konteks ini, setiap film diperlakukan sebagai sebuah dokumen, dan nilai TF-IDF dihitung berdasarkan kolom genre_year_boosted yang menggabungkan genre (dengan boosting) dan tahun rilis.
 
-TF-IDF memberikan bobot pada setiap kata (fitur) berdasarkan frekuensinya dalam satu dokumen relatif terhadap frekuensinya di seluruh dokumen. Dalam hal ini, setiap film dianggap sebagai sebuah dokumen, dan genre_year_boosted berisi kata-kata yang mewakili genre dan tahun rilis film.
+TF-IDF memberikan penekanan lebih pada genre karena informasi genre diduplikasi dua kali dalam string input, sesuai dengan strategi boosting yang diterapkan sebelumnya. Hal ini membuat sistem lebih peka terhadap kesamaan genre saat melakukan pencocokan antar film.
 
-Inisialisasi TfidfVectorizer dilakukan dengan parameter token_pattern=r'[^| ]+', yang memungkinkan tokenisasi berdasarkan pemisah seperti | dan spasi, sesuai dengan format data genre pada dataset. Setelah vektorisasi dilakukan dengan fit_transform, dihasilkan sebuah matriks TF-IDF (tfidf_matrix) yang merepresentasikan setiap film sebagai vektor berdimensi sejumlah kata unik yang terdapat di seluruh korpus genre_year.
+Inisialisasi TfidfVectorizer dilakukan dengan parameter token_pattern=r'[^| ]+', agar dapat memisahkan token berdasarkan karakter pemisah seperti tanda | dan spasi, yang umum digunakan dalam format genre. Proses fit_transform menghasilkan matriks TF-IDF (tfidf_matrix) yang merepresentasikan setiap film sebagai vektor berdimensi sejumlah token unik dalam seluruh korpus genre_year_boosted.
 
-Sebagai langkah tambahan untuk keperluan interpretasi dan debugging, matriks ini kemudian dikonversi menjadi sebuah DataFrame (tfidf_df) dengan indeks berupa judul film dan kolom-kolom yang mewakili setiap fitur (kata) yang diekstrak. Matriks ini akan digunakan dalam proses perhitungan kesamaan antar film menggunakan cosine similarity pada tahap selanjutnya dalam sistem rekomendasi berbasis konten.
+Untuk keperluan interpretasi dan debugging, matriks ini kemudian dikonversi menjadi sebuah DataFrame (tfidf_df) dengan indeks berupa judul film dan kolom-kolom yang mewakili setiap token yang diekstrak. Matriks TF-IDF inilah yang akan menjadi dasar perhitungan kesamaan antar film menggunakan cosine similarity pada tahap berikutnya dalam sistem Content-Based Filtering.
 
 ### Collaborative Filtering
 
@@ -203,7 +203,7 @@ Pada tahap ini, dibangun dua model sistem rekomendasi menggunakan pendekatan yan
 
 ### Content-Based Filtering
 
-Pendekatan Content-Based Filtering pada sistem rekomendasi ini dibangun dengan memanfaatkan metadata film, khususnya kolom genres dan year. Setelah dilakukan preprocessing dan penggabungan informasi tersebut ke dalam satu kolom genre_year, dilakukan ekstraksi fitur menggunakan metode TF-IDF (Term Frequency–Inverse Document Frequency). TF-IDF membantu merepresentasikan setiap film sebagai vektor berdasarkan kata-kata yang muncul di genre dan tahun rilisnya, sehingga film dengan genre serupa memiliki representasi vektor yang lebih mirip.
+Pendekatan Content-Based Filtering pada sistem rekomendasi ini dibangun dengan memanfaatkan metadata film, khususnya kolom genres dan year. Setelah dilakukan preprocessing dan penggabungan informasi tersebut ke dalam satu kolom genre_year_boosted, dilakukan ekstraksi fitur menggunakan metode TF-IDF (Term Frequency–Inverse Document Frequency). TF-IDF membantu merepresentasikan setiap film sebagai vektor berdasarkan kata-kata yang muncul di genre dan tahun rilisnya, sehingga film dengan genre serupa memiliki representasi vektor yang lebih mirip.
 
 Setelah vektorisasi selesai, dihitung kemiripan antar film menggunakan cosine similarity, yang direpresentasikan dalam bentuk matriks. Kemiripan ini dihitung menggunakan fungsi linear_kernel dari sklearn.metrics.pairwise, yang secara efisien menghasilkan skor kemiripan antara seluruh pasangan film dalam bentuk matriks simetri.
 
@@ -225,7 +225,11 @@ Untuk memberikan rekomendasi, dikembangkan sebuah fungsi recommend(title, top_n=
 
 ![Result](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result1.png)
 
-Output di atas merupakan hasil dari sistem Content-Based Filtering yang merekomendasikan film berdasarkan kemiripan kontennya, khususnya genre dan tahun rilis. Film yang direkomendasikan seperti Balto, Jumanji, dan Indian in the Cupboard, The menunjukkan kecenderungan kesamaan pada genre Adventure, Children, dan Fantasy. Selain itu, semua film yang muncul dalam rekomendasi berasal dari tahun yang sama, yaitu 1995, yang menunjukkan bahwa sistem juga mempertimbangkan kemiripan waktu rilis sebagai faktor penentu relevansi. Ini penting karena preferensi terhadap film sering kali berkaitan dengan era atau periode tertentu. Dengan demikian, rekomendasi yang diberikan bersifat personal dan kontekstual, menyesuaikan dengan gaya dan era film yang kemungkinan besar disukai oleh pengguna.
+Sistem rekomendasi berbasis konten yang dikembangkan dalam proyek ini bertujuan merekomendasikan film kepada pengguna berdasarkan kesamaan atribut kontennya, dalam hal ini adalah genre film. Sebagai studi kasus, film Toy Story digunakan sebagai acuan karena memiliki genre yang cukup khas, yaitu Adventure|Animation|Children|Comedy|Fantasy.
+
+Berdasarkan hasil pemodelan menggunakan TF-IDF pada kombinasi genre, sistem mampu menghasilkan daftar rekomendasi yang sangat relevan. Sepuluh film teratas yang direkomendasikan seluruhnya memiliki genre yang identik dengan film acuan, meskipun tahun rilisnya bervariasi. Di antaranya terdapat film populer seperti Monsters, Inc., Shrek the Third, Toy Story 2, dan Antz, yang memang dikenal memiliki tema dan gaya serupa dengan Toy Story. Ini menunjukkan bahwa sistem berhasil mengidentifikasi pola genre yang kompleks dan menggunakannya untuk memberikan saran film yang konsisten secara tematik.
+
+Rekomendasi yang konsisten ini mencerminkan bahwa model memiliki kemampuan mengenali genre sebagai fitur utama dalam menentukan kemiripan film. Hal ini juga memperkuat potensi sistem untuk digunakan pada skenario cold-start, di mana informasi historis pengguna belum tersedia, tetapi preferensi dapat disimpulkan dari satu atau beberapa film yang diketahui disukai.
 
 **Kelebihan:**
 
@@ -277,7 +281,11 @@ Pendekatan ini mampu menangkap pola kolaboratif antara pengguna dan item, sehing
 
 ![Result](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result2.png)
 
-Model rekomendasi berbasis deep learning yang telah dibangun menghasilkan daftar film yang diprediksi akan disukai oleh pengguna dengan User ID 1. Rekomendasi ini dibuat berdasarkan prediksi rating tertinggi yang diberikan oleh model terhadap film-film yang belum ditonton oleh pengguna tersebut. Hasilnya menunjukkan bahwa film "Shawshank Redemption, The" menempati urutan teratas dengan prediksi rating sebesar 4.70, diikuti oleh "Godfather, The" dan "Princess Bride, The" yang masing-masing memperoleh nilai 4.65. Film lainnya seperti "Raiders of the Lost Ark" dan "Fight Club" juga memiliki skor prediksi yang sangat tinggi, yaitu sekitar 4.64. Seluruh prediksi ini berada dalam rentang 0 hingga 5, yang telah diskalakan kembali dari output sigmoid model. Rekomendasi ini mencerminkan preferensi pengguna yang ditangkap oleh representasi embedding dari user dan film, sehingga model dapat memprediksi kecenderungan pengguna terhadap film dengan cukup akurat.
+Sistem rekomendasi berbasis Collaborative Filtering yang telah dikembangkan berhasil menghasilkan daftar film yang dipersonalisasi untuk pengguna dengan ID 1. Berdasarkan hasil prediksi rating dari model, lima film teratas yang direkomendasikan kepada pengguna ini menunjukkan skor prediksi yang sangat tinggi, menandakan kecocokan preferensi yang kuat antara pengguna dan film-film tersebut.
+
+Film dengan prediksi tertinggi adalah The Usual Suspects, dengan skor prediksi sebesar 4.77, diikuti oleh Star Wars: Episode IV - A New Hope (4.76), dan Forrest Gump (4.75). Dua film berikutnya dalam daftar adalah The Princess Bride dan Raiders of the Lost Ark, masing-masing dengan skor prediksi 4.75 dan 4.74. Seluruh film ini termasuk dalam kategori film populer dengan nilai artistik dan naratif yang tinggi, yang umum disukai oleh banyak penonton.
+
+Rekomendasi ini menunjukkan bahwa model mampu mengidentifikasi pola preferensi pengguna berdasarkan interaksi historis pengguna-pengguna lain yang serupa. Dengan pendekatan ini, sistem dapat memberikan saran film yang lebih bersifat personal dan relevan, bahkan tanpa perlu mengetahui detail konten film secara langsung. Keberhasilan model dalam menyarankan film-film berkualitas tinggi juga menjadi indikator bahwa pemodelan dan pelatihan telah dilakukan secara efektif.
 
 **Kelebihan:**
 
@@ -293,37 +301,35 @@ Model rekomendasi berbasis deep learning yang telah dibangun menghasilkan daftar
 
 ## Evaluation
 
+### Evaluation untuk Content-Based Filtering
+
+Evaluasi pada sistem rekomendasi berbasis konten (Content-Based Filtering) dilakukan dengan menghitung metrik Precision@10, yang mengukur seberapa relevan rekomendasi yang diberikan terhadap preferensi pengguna. Dalam konteks ini, relevansi didefinisikan sebagai film yang memiliki genre yang sama persis dengan film yang menjadi input (dalam hal ini, Toy Story dengan genre: Adventure|Animation|Children|Comedy|Fantasy).
+
+![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
+
+Dari 10 film yang direkomendasikan, seluruhnya memiliki genre yang sama persis dengan film Toy Story. Oleh karena itu, sistem menghasilkan nilai evaluasi:
+
+Precision@10: 1.0
+
+Nilai ini menunjukkan bahwa 100% dari rekomendasi yang diberikan sistem benar-benar relevan dengan preferensi pengguna berdasarkan kesamaan konten. Hasil ini mengindikasikan bahwa metode Content-Based Filtering yang diterapkan mampu secara akurat mengenali dan merekomendasikan film-film dengan genre yang identik, sesuai dengan preferensi awal pengguna.
+
 ### Evaluation untuk Collaborative Filtering
 
 ![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/RMSE.png)
 
-Untuk mengevaluasi performa sistem rekomendasi berbasis Collaborative Filtering dengan Neural Network, metrik yang digunakan adalah Root Mean Squared Error (RMSE). RMSE mengukur seberapa jauh nilai rating yang diprediksi oleh model dibandingkan dengan rating sebenarnya yang diberikan oleh pengguna. Nilai RMSE yang lebih kecil menandakan bahwa prediksi model lebih akurat.
+Evaluasi model Collaborative Filtering dilakukan dengan menggunakan metrik Root Mean Squared Error (RMSE), yang mengukur seberapa jauh prediksi rating yang dihasilkan model menyimpang dari rating asli yang diberikan oleh pengguna.
 
-![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result3.png)
+![RMSE](https://raw.githubusercontent.com/LapplandSa/Proyek-Sistem-Rekomendasi/main/images/result4.png)
 
-Dalam konteks proyek ini, RMSE digunakan untuk mengetahui seberapa akurat model dalam memprediksi rating yang akan diberikan oleh pengguna terhadap film tertentu. Hasil evaluasi menunjukkan bahwa model menghasilkan nilai RMSE sebesar 0.9703, yang berarti secara rata-rata prediksi model hanya meleset sekitar 0.88 poin dari rating aktual. Ini mengindikasikan bahwa model telah belajar dengan cukup baik untuk merepresentasikan preferensi pengguna terhadap film.
+Pada pengujian dengan data testing, model berhasil mencapai nilai RMSE sebesar 0.9623. Nilai ini menunjukkan bahwa rata-rata kesalahan prediksi model terhadap rating asli adalah sekitar 0.96 pada skala rating 0–5. Dengan kata lain, model dapat memprediksi preferensi pengguna terhadap film dengan tingkat akurasi yang cukup baik.
 
-### Evaluation untuk Content-Based Filtering
-
-Berbeda dengan Collaborative Filtering yang memprediksi rating dan dievaluasi menggunakan metrik regresi seperti RMSE, pendekatan Content-Based Filtering bertujuan merekomendasikan item berdasarkan kemiripan kontennya (dalam hal ini, genre dan tahun rilis film). Oleh karena itu, metrik evaluasi kuantitatif seperti RMSE tidak relevan.
-
-Sebagai gantinya, performa Content-Based Filtering umumnya dievaluasi melalui:
-
-- Validasi manual: dengan melihat apakah film yang direkomendasikan memang mirip atau relevan dengan film yang disukai pengguna.
-
-- Studi user feedback: meminta pengguna untuk menilai apakah rekomendasi yang diberikan sesuai dengan preferensi mereka.
-
-- Precision@k atau Recall@k (jika tersedia data historis yang cukup): untuk mengukur berapa banyak film yang benar-benar disukai dari daftar rekomendasi.
-
-Namun, dalam proyek ini, karena tidak dilakukan evaluasi berbasis feedback pengguna secara eksplisit, maka hasil evaluasi Content-Based Filtering ditunjukkan melalui analisis kualitatif: yaitu dengan melihat kesesuaian genre dan tahun dari film-film yang direkomendasikan dengan film yang sebelumnya disukai oleh pengguna. Pendekatan ini juga bermanfaat pada situasi cold-start, di mana data interaksi pengguna sangat terbatas.
-
-Sebagai contoh, ketika pengguna menyukai film Toy Story, sistem merekomendasikan film lain seperti Jumanji, Balto, dan Wallace & Gromit: A Close Shave. Film-film ini memiliki genre serupa, yaitu Adventure, Animation, dan Children, serta dirilis pada tahun yang sama (1995). Hal ini menunjukkan bahwa sistem dapat mengenali kemiripan berdasarkan konten (genre + tahun), dan mampu memberikan rekomendasi yang konsisten dengan preferensi pengguna.
+RMSE ini memberikan gambaran seberapa tepat model Collaborative Filtering dalam merekomendasikan film berdasarkan interaksi pengguna secara historis, dan menjadi indikator utama untuk menilai kualitas sistem rekomendasi berbasis data pengguna dan item.
 
 ### Keterkaitan dengan Business Understanding
 
 Evaluasi performa model dalam proyek ini memberikan kontribusi signifikan terhadap pemahaman bisnis, khususnya dalam menjawab kebutuhan utama pengguna platform streaming: mengurangi kebingungan dalam memilih film dan meningkatkan kepuasan pengalaman menonton. Dua pendekatan utama yang digunakan, yaitu Content-Based Filtering dan Collaborative Filtering, diuji performanya menggunakan metrik evaluasi yang sesuai dengan tujuan bisnis: personalisasi dan akurasi.
 
-Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.9703, yang menunjukkan bahwa model mampu memprediksi rating pengguna terhadap film dengan kesalahan yang relatif kecil. Artinya, rekomendasi yang diberikan mendekati preferensi aktual pengguna, sehingga berpotensi meningkatkan engagement dan loyalitas pengguna terhadap platform.
+Model Collaborative Filtering (Neural Network) mencapai RMSE sebesar 0.9623, yang menunjukkan bahwa model mampu memprediksi rating pengguna terhadap film dengan kesalahan yang relatif kecil. Artinya, rekomendasi yang diberikan mendekati preferensi aktual pengguna, sehingga berpotensi meningkatkan engagement dan loyalitas pengguna terhadap platform.
 
 ### Keterkaitan dengan Problem Statements
 
@@ -349,7 +355,7 @@ Kedua sistem menghasilkan rekomendasi film yang sesuai dengan preferensi penggun
 
 **Meningkatkan relevansi melalui data historis:**
 
-Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara efektif. RMSE sebesar 0.9703 mengindikasikan bahwa prediksi rating cukup akurat. Hal ini menunjukkan bahwa sistem dapat diandalkan dalam memberikan prediksi terhadap film yang belum pernah ditonton oleh pengguna, memperkuat pencapaian Goals.
+Collaborative Filtering terbukti mampu memanfaatkan data rating historis secara efektif. RMSE sebesar 0.9623 mengindikasikan bahwa prediksi rating cukup akurat. Hal ini menunjukkan bahwa sistem dapat diandalkan dalam memberikan prediksi terhadap film yang belum pernah ditonton oleh pengguna, memperkuat pencapaian Goals.
 
 ### Dampak dari Solution Statements
 
